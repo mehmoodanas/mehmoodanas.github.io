@@ -1,7 +1,7 @@
 /* ============================================================
-   ANAS MEHMOOD — PORTFOLIO SCRIPT (v4.2)
-   Vanilla JS + Three.js wireframe (warm colors, no cyan)
-   + mouse-tracking 3D tilt on [data-tilt] cards
+   ANAS MEHMOOD — PORTFOLIO SCRIPT (v7)
+   Sidebar + two-page · Sand & Ink palette · NO orange
+   3D: undulating wireframe (ink + gold) on home + sidebar wireframe
    ============================================================ */
 
 (function () {
@@ -13,7 +13,7 @@
       document.body.classList.add('loaded');
       const loader = document.getElementById('loader');
       if (loader) loader.classList.add('done');
-    }, 1900);
+    }, 1700);
   });
 
   /* ---------- 2. SCROLL REVEALS ---------- */
@@ -26,96 +26,90 @@
           io.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
     revealEls.forEach((el) => io.observe(el));
   } else {
     revealEls.forEach((el) => el.classList.add('visible'));
   }
 
-  /* ---------- 3. HEADER HIDE ON SCROLL DOWN ---------- */
-  const header = document.getElementById('header');
-  let lastScroll = 0;
-  let ticking = false;
-  function onScroll() {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        const cur = window.scrollY;
-        if (cur > lastScroll && cur > 200) {
-          header.classList.add('hidden');
-        } else {
-          header.classList.remove('hidden');
-        }
-        lastScroll = cur;
-        ticking = false;
-      });
-      ticking = true;
-    }
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
+  /* ---------- 3. ACTIVE NAV TRACKING ---------- */
+  const navLinks = document.querySelectorAll('.side-nav a[data-link]');
+  const sectionIds = Array.from(navLinks).map((a) => a.getAttribute('href').slice(1));
+  const sections = sectionIds
+    .map((id) => document.getElementById(id))
+    .filter(Boolean);
 
-  /* ---------- 4. MOBILE BURGER MENU ---------- */
-  const burger   = document.getElementById('navBurger');
-  const navLinks = document.getElementById('navLinks');
-  if (burger && navLinks) {
+  function setActiveNav(id) {
+    navLinks.forEach((a) => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+  }
+
+  if ('IntersectionObserver' in window && sections.length) {
+    const navIO = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      if (visible[0]) setActiveNav(visible[0].target.id);
+    }, { rootMargin: '-20% 0px -60% 0px', threshold: 0 });
+    sections.forEach((s) => navIO.observe(s));
+  }
+
+  /* ---------- 4. MOBILE SIDEBAR ---------- */
+  const burger  = document.getElementById('mobileBurger');
+  const sidebar = document.getElementById('sidebar');
+  if (burger && sidebar) {
     burger.addEventListener('click', () => {
       burger.classList.toggle('open');
-      navLinks.classList.toggle('open');
+      sidebar.classList.toggle('open');
     });
-    navLinks.querySelectorAll('a').forEach((a) => {
+    sidebar.querySelectorAll('a').forEach((a) => {
       a.addEventListener('click', () => {
         burger.classList.remove('open');
-        navLinks.classList.remove('open');
+        sidebar.classList.remove('open');
       });
     });
   }
 
-  /* ---------- 5. 3D MOUSE-TILT FOR CARDS ---------- */
-  // Apply rotateX/rotateY based on mouse position over the card.
-  // Only on devices with hover (skip touch — already handled in CSS).
+  /* ---------- 5. CARD MOUSE-TILT ---------- */
   const tiltEls = document.querySelectorAll('[data-tilt]');
   const canHover = window.matchMedia('(hover: hover)').matches;
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (canHover && !reducedMotion) {
+  if (canHover && !reduced) {
     tiltEls.forEach((el) => {
-      el.style.transformStyle = 'preserve-3d';
-      el.style.willChange = 'transform';
-
       el.addEventListener('mousemove', (e) => {
         const r = el.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width;   // 0..1
-        const y = (e.clientY - r.top)  / r.height;  // 0..1
-        const rx = (0.5 - y) * 8;   // up/down tilt — max 8deg
-        const ry = (x - 0.5) * 10;  // left/right tilt — max 10deg
+        const x = (e.clientX - r.left) / r.width;
+        const y = (e.clientY - r.top)  / r.height;
+        const rx = (0.5 - y) * 8;
+        const ry = (x - 0.5) * 10;
         el.style.transform =
-          `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px) translateZ(8px)`;
+          `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-3px) translateZ(6px)`;
       });
-
       el.addEventListener('mouseleave', () => {
         el.style.transform = '';
       });
     });
   }
 
-  /* ---------- 6. THREE.JS HERO SCENE ---------- */
-  // Bigger wireframe icosahedron + warm particle cloud + secondary torus.
-  // Pauses when hero offscreen for performance.
-  const canvas = document.getElementById('heroCanvas');
-  const heroSection = document.getElementById('home');
-
-  if (canvas && heroSection && typeof THREE !== 'undefined' && !reducedMotion) {
-    let renderer, scene, camera, mainMesh, secondaryMesh, particles, raf, isVisible = true;
+  /* ---------- 6. THREE.JS — HOME HERO PLANE (ink + gold) ---------- */
+  const bg = document.getElementById('bgCanvas');
+  if (bg && typeof THREE !== 'undefined' && !reduced) {
+    let renderer, scene, camera, mesh, particles, raf;
+    const heroEl = bg.parentElement;
 
     function init() {
-      const w = heroSection.clientWidth;
-      const h = heroSection.clientHeight;
+      const w = heroEl.clientWidth;
+      const h = heroEl.clientHeight;
 
       scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
-      camera.position.z = 6;
+      camera = new THREE.PerspectiveCamera(40, w / h, 0.1, 100);
+      camera.position.set(0, 1.6, 7.5);
+      camera.lookAt(0, 0, 0);
 
       renderer = new THREE.WebGLRenderer({
-        canvas,
+        canvas: bg,
         alpha: true,
         antialias: true,
         powerPreference: 'high-performance'
@@ -124,56 +118,34 @@
       renderer.setSize(w, h, false);
       renderer.setClearColor(0x000000, 0);
 
-      // 1. Main wireframe icosahedron — bigger, more detail, terracotta
-      const mainGeo  = new THREE.IcosahedronGeometry(2.4, 1);
-      const mainWire = new THREE.WireframeGeometry(mainGeo);
-      const mainMat  = new THREE.LineBasicMaterial({
-        color: 0xc4694b,
+      // Wireframe topographic plane — cream wireframe on near-black bg
+      const planeGeo = new THREE.PlaneGeometry(14, 9, 38, 24);
+      const planeMat = new THREE.MeshBasicMaterial({
+        color: 0xecebe0,
+        wireframe: true,
         transparent: true,
-        opacity: 0.45,
+        opacity: 0.18,
       });
-      mainMesh = new THREE.LineSegments(mainWire, mainMat);
-      scene.add(mainMesh);
+      mesh = new THREE.Mesh(planeGeo, planeMat);
+      mesh.rotation.x = -Math.PI / 2.6;
+      mesh.position.y = -1.2;
+      scene.add(mesh);
 
-      // 2. Secondary smaller torus knot — adds depth + 3D feel
-      const torusGeo  = new THREE.TorusKnotGeometry(0.8, 0.15, 64, 8, 2, 3);
-      const torusWire = new THREE.WireframeGeometry(torusGeo);
-      const torusMat  = new THREE.LineBasicMaterial({
-        color: 0xd4a574,
-        transparent: true,
-        opacity: 0.32,
-      });
-      secondaryMesh = new THREE.LineSegments(torusWire, torusMat);
-      secondaryMesh.position.set(2.5, -1.4, 1);
-      secondaryMesh.scale.set(0.9, 0.9, 0.9);
-      scene.add(secondaryMesh);
-
-      // 3. Particle dust — warm palette (terracotta + honey + cream)
-      const N = 240;
+      // Floating gold yellow particles (the only colored accent)
+      const N = 80;
       const positions = new Float32Array(N * 3);
-      const colors    = new Float32Array(N * 3);
-      const palette = [
-        new THREE.Color(0xc4694b), // terracotta
-        new THREE.Color(0xd4a574), // honey
-        new THREE.Color(0xe8d4b0), // cream
-      ];
       for (let i = 0; i < N; i++) {
-        positions[i * 3]     = (Math.random() - 0.5) * 16;
-        positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-        positions[i * 3 + 2] = (Math.random() - 0.5) * 9;
-        const c = palette[Math.floor(Math.random() * palette.length)];
-        colors[i * 3]     = c.r;
-        colors[i * 3 + 1] = c.g;
-        colors[i * 3 + 2] = c.b;
+        positions[i * 3]     = (Math.random() - 0.5) * 14;
+        positions[i * 3 + 1] = Math.random() * 5 + 0.5;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 8;
       }
       const pGeo = new THREE.BufferGeometry();
       pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      pGeo.setAttribute('color',    new THREE.BufferAttribute(colors, 3));
       const pMat = new THREE.PointsMaterial({
-        size: 0.045,
-        vertexColors: true,
+        size: 0.05,
+        color: 0xf7d774,
         transparent: true,
-        opacity: 0.75,
+        opacity: 0.7,
         sizeAttenuation: true,
       });
       particles = new THREE.Points(pGeo, pMat);
@@ -182,75 +154,109 @@
 
     let mouseX = 0, mouseY = 0;
     function onMouseMove(e) {
-      const r = heroSection.getBoundingClientRect();
+      const r = heroEl.getBoundingClientRect();
       mouseX = ((e.clientX - r.left) / r.width)  - 0.5;
       mouseY = ((e.clientY - r.top)  / r.height) - 0.5;
     }
-    heroSection.addEventListener('mousemove', onMouseMove, { passive: true });
+    heroEl.addEventListener('mousemove', onMouseMove, { passive: true });
 
     function animate() {
       raf = requestAnimationFrame(animate);
-      const t = performance.now() * 0.0003;
+      const t = performance.now() * 0.0006;
 
-      if (mainMesh) {
-        mainMesh.rotation.y = t * 1.4 + mouseX * 0.4;
-        mainMesh.rotation.x = Math.sin(t) * 0.4 + mouseY * 0.25;
-      }
-      if (secondaryMesh) {
-        secondaryMesh.rotation.y = -t * 2.2;
-        secondaryMesh.rotation.x = t * 1.6 + mouseY * 0.3;
-        secondaryMesh.position.x = 2.5 + Math.sin(t * 2) * 0.25;
+      if (mesh) {
+        const positions = mesh.geometry.attributes.position;
+        for (let i = 0; i < positions.count; i++) {
+          const x = positions.getX(i);
+          const y = positions.getY(i);
+          const z = Math.sin(x * 0.55 + t * 1.4) * 0.45
+                  + Math.cos(y * 0.75 + t * 1.1) * 0.35;
+          positions.setZ(i, z);
+        }
+        positions.needsUpdate = true;
+        mesh.rotation.z = mouseX * 0.06;
       }
       if (particles) {
-        particles.rotation.y = t * 0.5;
-        particles.rotation.x = mouseY * 0.08;
+        particles.rotation.y = t * 0.18;
+        particles.position.y = Math.sin(t * 0.8) * 0.2;
       }
+      camera.position.x += (mouseX * 0.6 - camera.position.x) * 0.05;
+      camera.position.y += (1.6 + mouseY * -0.4 - camera.position.y) * 0.05;
+      camera.lookAt(0, 0, 0);
 
       renderer.render(scene, camera);
     }
 
-    function start() {
-      if (raf) return;
-      animate();
-    }
-    function stop() {
-      if (raf) {
-        cancelAnimationFrame(raf);
-        raf = null;
-      }
-    }
+    function start() { if (!raf) animate(); }
+    function stop()  { if (raf) { cancelAnimationFrame(raf); raf = null; } }
 
     function onResize() {
-      const w = heroSection.clientWidth;
-      const h = heroSection.clientHeight;
+      const w = heroEl.clientWidth;
+      const h = heroEl.clientHeight;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h, false);
     }
     window.addEventListener('resize', onResize);
 
-    // Pause render when hero offscreen
     if ('IntersectionObserver' in window) {
       const heroIO = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          isVisible = entry.isIntersecting;
-          if (isVisible) start(); else stop();
-        });
+        entries.forEach((e) => { if (e.isIntersecting) start(); else stop(); });
       }, { threshold: 0 });
-      heroIO.observe(heroSection);
+      heroIO.observe(heroEl);
     }
-
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden) stop();
-      else if (isVisible) start();
+      if (document.hidden) stop(); else start();
     });
 
-    try {
-      init();
-      start();
-    } catch (err) {
-      console.warn('Three.js init failed:', err);
-      canvas.style.display = 'none';
+    try { init(); start(); }
+    catch (err) { console.warn('Hero 3D failed:', err); bg.style.display = 'none'; }
+  }
+
+  /* ---------- 7. THREE.JS — SIDEBAR WIREFRAME ICOSAHEDRON ---------- */
+  const sb = document.getElementById('sidebar3d');
+  if (sb && typeof THREE !== 'undefined' && !reduced) {
+    let r2, s2, c2, m2, raf2;
+
+    function initSb() {
+      const w = sb.parentElement.clientWidth;
+      const h = sb.clientHeight || 130;
+      s2 = new THREE.Scene();
+      c2 = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+      c2.position.z = 4.2;
+      r2 = new THREE.WebGLRenderer({ canvas: sb, alpha: true, antialias: true });
+      r2.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+      r2.setSize(w, h, false);
+      r2.setClearColor(0x000000, 0);
+
+      // Wireframe icosahedron in cream/yellow on dark sidebar
+      const g  = new THREE.IcosahedronGeometry(1.2, 1);
+      const wg = new THREE.WireframeGeometry(g);
+      const mt = new THREE.LineBasicMaterial({
+        color: 0xf4d35e,
+        transparent: true,
+        opacity: 0.5,
+      });
+      m2 = new THREE.LineSegments(wg, mt);
+      s2.add(m2);
     }
+    function animateSb() {
+      raf2 = requestAnimationFrame(animateSb);
+      const t = performance.now() * 0.0004;
+      if (m2) {
+        m2.rotation.y = t * 1.4;
+        m2.rotation.x = Math.sin(t) * 0.5;
+      }
+      r2.render(s2, c2);
+    }
+    function startSb() { if (!raf2) animateSb(); }
+    function stopSb()  { if (raf2) { cancelAnimationFrame(raf2); raf2 = null; } }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopSb(); else startSb();
+    });
+
+    try { initSb(); startSb(); }
+    catch (err) { console.warn('Sidebar 3D failed:', err); sb.style.display = 'none'; }
   }
 })();
