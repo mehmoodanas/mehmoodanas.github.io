@@ -3,520 +3,205 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Anas Mehmood — Computer Systems undergraduate, Riga Technical University. AI / NLP / Test Automation. Python, Java, PyTorch, Hugging Face." />
-  <meta name="theme-color" content="#f5f0e8" />
-  <title>Anas Mehmood — Computer Systems · AI / NLP Engineer</title>
+  <meta name="description" content="Anas Mehmood — Computer Systems undergraduate at Riga Technical University. AI / NLP / Test Automation." />
+  <meta name="theme-color" content="#0a0c14" />
+  <title>Anas Mehmood — Portfolio</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-
-  <!-- Animated warm halo background (CSS-only) -->
-  <div class="halo-bg" aria-hidden="true">
-    <div class="halo halo-1"></div>
-    <div class="halo halo-2"></div>
-    <div class="halo halo-3"></div>
-    <div class="halo halo-4"></div>
-  </div>
+<body class="page-home">
 
   <!-- LOADER -->
   <div class="loader" id="loader">
-    <div class="loader-inner">
-      <div class="loader-name">Anas&nbsp;Mehmood</div>
-      <div class="loader-bar"><div class="loader-fill"></div></div>
-    </div>
+    <svg class="loader-mark" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+      <path class="logo-stroke" d="M 4 55 L 22 5 L 40 55"/>
+      <line class="logo-stroke" x1="11" y1="35" x2="33" y2="35"/>
+      <path class="logo-stroke" d="M 48 55 L 48 5 L 66 30 L 84 5 L 84 55"/>
+      <circle class="logo-dot" cx="94" cy="55" r="3"/>
+    </svg>
+    <div class="loader-bar"><div class="loader-fill"></div></div>
   </div>
 
-  <!-- HEADER -->
-  <header class="header" id="header">
-    <a href="#home" class="logo" aria-label="Anas Mehmood — Home">
-      <svg class="logo-mark" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
-        <circle class="logo-ring" cx="28" cy="28" r="26" fill="none" stroke-width="0.9"/>
-        <text class="logo-letter logo-a" x="14" y="38"
-              font-family="Times New Roman, serif" font-size="30"
-              font-style="italic" letter-spacing="-0.04em">A</text>
-        <text class="logo-letter logo-m" x="27" y="38"
-              font-family="Times New Roman, serif" font-size="30"
-              letter-spacing="-0.04em">M</text>
-      </svg>
-    </a>
-
-    <nav class="nav-links" id="navLinks">
-      <a href="#about">About</a>
-      <a href="#work">Work</a>
-      <a href="#stack">Stack</a>
-      <a href="#contact">Contact</a>
-    </nav>
-
-    <span class="header-status">
-      <span class="status-dot"></span>
-      <span class="status-text">Available</span>
-    </span>
-
-    <button class="nav-burger" id="navBurger" aria-label="Open menu">
-      <span></span><span></span>
+  <!-- MOBILE BAR -->
+  <header class="mobile-bar" id="mobileBar">
+    <span class="mobile-name">Anas Mehmood</span>
+    <button class="mobile-burger" id="mobileBurger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
     </button>
   </header>
 
-  <!-- HERO -->
-  <section id="home" class="hero">
-    <!-- 3D wireframe scene canvas (only renders while hero visible) -->
-    <canvas id="heroCanvas" class="hero-canvas" aria-hidden="true"></canvas>
+  <div class="layout">
+    <!-- ============================================
+         SIDEBAR (carries the name + identity)
+    ============================================= -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-inner">
+        <a href="index.html" class="logo" aria-label="Anas Mehmood — Home">
+          <svg class="logo-mark" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path class="logo-stroke" d="M 4 55 L 22 5 L 40 55"/>
+            <line class="logo-stroke" x1="11" y1="35" x2="33" y2="35"/>
+            <path class="logo-stroke" d="M 48 55 L 48 5 L 66 30 L 84 5 L 84 55"/>
+            <circle class="logo-dot" cx="94" cy="55" r="3"/>
+          </svg>
+        </a>
 
-    <div class="hero-content">
-      <h1 class="hero-name" aria-label="Anas Mehmood">
-        <span class="line"><span class="word">Anas</span></span>
-        <span class="line"><em class="word">Mehmood</em></span>
-      </h1>
+        <div class="profile">
+          <h1 class="profile-name">
+            <span>Anas</span>
+            <span><em>Mehmood</em></span>
+          </h1>
+          <p class="profile-title">Computer Systems · AI / NLP / QA</p>
+        </div>
 
-      <div class="hero-bottom">
-        <p class="hero-tagline">
-          Final-year <em>Computer Systems</em> undergraduate at Riga Technical University.
-          I build end-to-end AI systems — fine-tuning <em>transformers</em>, deploying
-          <em>Python / Flask</em> services, and writing test frameworks in <em>Java</em>
-          and Python that give teams confidence to ship.
-        </p>
+        <canvas class="sidebar-3d" id="sidebar3d" aria-hidden="true"></canvas>
 
-        <div class="hero-actions">
-          <a href="#work" class="btn btn-primary">
-            <span>Explore my work</span>
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
-          <a href="https://github.com/mehmoodanas" target="_blank" rel="noopener" class="btn btn-ghost">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-            <span>GitHub</span>
-          </a>
+        <nav class="side-nav" id="sideNav">
+          <a href="#about"   data-link><span class="dot"></span>About</a>
+          <a href="#peek"    data-link><span class="dot"></span>Featured Work</a>
+          <a href="work.html"><span class="dot"></span>Full Portfolio <span class="arrow">→</span></a>
+          <a href="#contact" data-link><span class="dot"></span>Contact</a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="status">
+            <span class="status-dot"></span>
+            <span>Available · Summer 2026</span>
+          </div>
+          <div class="sidebar-socials">
+            <a href="https://github.com/mehmoodanas" target="_blank" rel="noopener">GitHub</a>
+            <a href="#" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="mailto:mehmoodanas90@gmail.com">Email</a>
+          </div>
+          <div class="sidebar-meta">
+            <span>📍 Riga, Latvia</span>
+            <span>(+371) 22025169</span>
+          </div>
         </div>
       </div>
+    </aside>
 
-      <div class="scroll-indicator">
-        <span class="mono">scroll</span>
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    <!-- ============================================
+         MAIN — compact CV view (no big name)
+    ============================================= -->
+    <main class="main">
+      <div class="main-inner">
+
+        <!-- INTRO -->
+        <section class="intro">
+          <canvas id="bgCanvas" class="bg-canvas" aria-hidden="true"></canvas>
+
+          <div class="intro-content">
+            <span class="page-eyebrow">— Portfolio · Riga, 2026</span>
+
+            <h1 class="intro-statement">
+              I build <em>AI systems</em><br/>
+              and the <em>tests</em> that prove<br/>
+              they work.
+            </h1>
+
+            <p class="intro-body">
+              Final-year B.Sc. <strong class="hl">Computer Systems</strong> at Riga Technical
+              University. Recent thesis on <strong class="hl">transformer-based</strong>
+              customer service automation. Looking for <strong class="hl">MS Data Science</strong>
+              and Summer 2026 internships in ML / QA / SDET.
+            </p>
+
+            <div class="intro-actions">
+              <a href="work.html" class="btn btn-primary">
+                See selected work <span class="arrow">→</span>
+              </a>
+              <a href="#contact" class="btn btn-ghost">Get in touch</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- ABOUT (compact) -->
+        <section id="about" class="about">
+          <div class="section-meta">
+            <span class="num">01</span>
+            <span class="line-h"></span>
+            <span>About</span>
+          </div>
+
+          <div class="about-grid">
+            <div class="about-card" data-reveal data-tilt>
+              <span class="card-num">01</span>
+              <h3>Research</h3>
+              <p>BSc thesis fine-tuning <strong class="hl">DistilBERT</strong> &amp; <strong class="hl">Sentence-BERT</strong> for customer service automation.</p>
+            </div>
+            <div class="about-card" data-reveal data-tilt>
+              <span class="card-num">02</span>
+              <h3>Engineering</h3>
+              <p>Test framework in <strong class="hl">Python</strong> &amp; <strong class="hl">Java</strong> with Docker and GitHub Actions CI.</p>
+            </div>
+            <div class="about-card" data-reveal data-tilt>
+              <span class="card-num">03</span>
+              <h3>Languages</h3>
+              <p>Five spoken — <strong class="hl">Urdu, English, Punjabi, Russian, Latvian</strong>.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- FEATURED PEEK -->
+        <section id="peek" class="peek">
+          <div class="section-meta">
+            <span class="num">02</span>
+            <span class="line-h"></span>
+            <span>Featured Work</span>
+          </div>
+
+          <div class="peek-grid">
+            <a href="work.html#thesis" class="peek-card" data-reveal data-tilt>
+              <span class="peek-year">2024 – 2025</span>
+              <h3>AI Customer Service <em>Automation</em></h3>
+              <p>Transformer-based conversational AI — <strong class="hl">DistilBERT</strong> + <strong class="hl">Sentence-BERT</strong> on a Flask + Spring Boot stack.</p>
+              <span class="peek-cta">Read more <span>→</span></span>
+            </a>
+
+            <a href="work.html#api-test" class="peek-card" data-reveal data-tilt>
+              <span class="peek-year">2026</span>
+              <h3>API Test Automation <em>Framework</em></h3>
+              <p>Two-layer test framework — <strong class="hl">Python + Playwright</strong>, mirrored in Java + RestAssured. Open source.</p>
+              <span class="peek-cta">Read more <span>→</span></span>
+            </a>
+          </div>
+
+          <a href="work.html" class="peek-link">See everything I've built <span class="arrow">→</span></a>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact" class="contact-mini">
+          <div class="section-meta">
+            <span class="num">03</span>
+            <span class="line-h"></span>
+            <span>Contact</span>
+          </div>
+
+          <a href="mailto:mehmoodanas90@gmail.com" class="big-email">
+            mehmoodanas90@gmail.com <span>→</span>
+          </a>
+
+          <div class="quick-links">
+            <a href="https://github.com/mehmoodanas" target="_blank" rel="noopener">GitHub ↗</a>
+            <a href="#" target="_blank" rel="noopener">LinkedIn ↗</a>
+            <a href="tel:+37122025169">(+371) 22025169</a>
+          </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+          <span class="mono">© 2026 — Anas Mehmood</span>
+          <a href="#" class="back-top mono">Back to top ↑</a>
+        </footer>
+
       </div>
-    </div>
-  </section>
-
-  <!-- QUOTE BAND -->
-  <div class="quote-band">
-    <div class="container">
-      <p class="quote-line" data-reveal>
-        <span class="quote-mark">“</span>
-        Quality is never an accident; it is always the result of <em>intelligent effort</em>.
-        <span class="quote-mark right">”</span>
-      </p>
-      <span class="quote-author mono" data-reveal>— John Ruskin</span>
-    </div>
+    </main>
   </div>
 
-  <!-- ABOUT -->
-  <section id="about" class="section">
-    <div class="container">
-      <div class="section-meta" data-reveal>
-        <span class="line-h"></span>
-        <span class="meta-label">About</span>
-      </div>
-
-      <p class="big-statement" data-reveal>
-        I build systems where <em>machine learning</em> meets <em>engineering rigour</em>.
-      </p>
-
-      <div class="about-grid">
-        <p data-reveal>I'm a final-year <strong>Computer Systems</strong> undergraduate at Riga Technical University. My thesis builds a transformer-based conversational AI — using <strong>DistilBERT</strong> for intent classification and <strong>Sentence-BERT</strong> for semantic retrieval — wrapped in a Python/Flask micro-service and a Java/Spring Boot dialogue backend.</p>
-        <p data-reveal>Outside of research I write <strong>test automation frameworks</strong> in Python and Java, design layered architectures with the Page Object Model, and care about CI/CD as much as clean code. Now seeking the <strong>MS in Data Science at the University of Padova</strong> and ML / QA / SDET internship roles for Summer 2026.</p>
-      </div>
-
-      <div class="stat-grid" data-reveal>
-        <div class="stat">
-          <div class="stat-num">B.Sc.</div>
-          <div class="stat-label">Computer Systems<br/><span>Riga Technical University</span></div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">5</div>
-          <div class="stat-label">Languages spoken<br/><span>Urdu · English · Punjabi · Russian · Latvian</span></div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">5+</div>
-          <div class="stat-label">Programming languages<br/><span>Python · Java · C++ · SQL · JS</span></div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">2026</div>
-          <div class="stat-label">Available<br/><span>MS · Internships</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- EDUCATION -->
-  <section id="education" class="section section-edu">
-    <div class="container">
-      <div class="section-meta" data-reveal>
-        <span class="line-h"></span>
-        <span class="meta-label">Education</span>
-      </div>
-
-      <h2 class="section-title" data-reveal>
-        Where I'm being <em>shaped</em>.
-      </h2>
-
-      <article class="edu-card" data-reveal data-tilt>
-        <div class="edu-meta">
-          <span class="mono">Riga, Latvia</span>
-          <span class="mono dim">Feb 2023 – 2026</span>
-        </div>
-        <h3 class="edu-degree">B.Sc. Computer Systems<br/><em>Riga Technical University</em></h3>
-        <p class="edu-desc">
-          Coursework in Data Structures &amp; Algorithms, Database Management (MySQL/SQL),
-          Probability &amp; Statistics, Artificial Intelligence, Data Management &amp; Analysis,
-          Systems Modelling (BPMN/EFFBD), Software Engineering, and Object-Oriented Programming.
-        </p>
-        <div class="edu-tags">
-          <span>AI</span><span>DBMS</span><span>Statistics</span>
-          <span>Software Engineering</span><span>OOP</span><span>Systems Modelling</span>
-        </div>
-      </article>
-
-      <div class="cert-grid" data-reveal>
-        <div class="cert-row">
-          <span class="cert-year mono">Aug 2025</span>
-          <div>
-            <h4>Generative AI Fundamentals</h4>
-            <span class="cert-org">Databricks Academy</span>
-          </div>
-        </div>
-        <div class="cert-row">
-          <span class="cert-year mono">2024</span>
-          <div>
-            <h4>IELTS Academic — English Proficiency</h4>
-            <span class="cert-org">Level B2</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- WORK -->
-  <section id="work" class="section section-work">
-    <div class="container">
-      <div class="section-meta" data-reveal>
-        <span class="line-h"></span>
-        <span class="meta-label">Selected Work — 2024–2026</span>
-      </div>
-
-      <h2 class="section-title" data-reveal>
-        Recent <em>projects</em>.
-      </h2>
-
-      <!-- FEATURED #1: AI Thesis -->
-      <article class="project-featured" data-reveal data-tilt>
-        <div class="featured-meta">
-          <span class="mono">Bachelor's Thesis · Featured</span>
-          <span class="mono dim">2024 – 2025</span>
-        </div>
-
-        <h3 class="project-title">
-          AI in Customer Service <em>Automation</em>
-        </h3>
-
-        <p class="project-desc">
-          A transformer-based conversational AI for CRM systems. <strong>DistilBERT</strong>
-          fine-tuned for intent classification on a curated customer-support corpus, and
-          <strong>Sentence-BERT</strong> for semantic similarity retrieval. Two-service
-          architecture: a <code>Python / Flask</code> ML inference micro-service paired with
-          a <code>Java / Spring Boot</code> dialogue backend and an HTML/JS front-end over REST.
-          Comparative evaluation of rule-based vs. DistilBERT vs. Sentence-BERT —
-          benchmarking accuracy, confidence and latency to quantify the
-          interpretability-vs-precision trade-off.
-        </p>
-
-        <div class="project-stats">
-          <div class="stat-item">
-            <div class="stat-value">3</div>
-            <div class="stat-name">Approaches compared<br/><span>rule-based · DistilBERT · S-BERT</span></div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">2</div>
-            <div class="stat-name">Service backbone<br/><span>Flask + Spring Boot</span></div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">NLP</div>
-            <div class="stat-name">Domain<br/><span>intent + semantic retrieval</span></div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">REST</div>
-            <div class="stat-name">Integration<br/><span>HTML/JS front-end</span></div>
-          </div>
-        </div>
-
-        <div class="project-tags">
-          <span>Python</span>
-          <span>PyTorch</span>
-          <span>Hugging Face Transformers</span>
-          <span>DistilBERT</span>
-          <span>Sentence-BERT</span>
-          <span>Flask</span>
-          <span>Java</span>
-          <span>Spring Boot</span>
-          <span>HTML / JS</span>
-          <span>REST APIs</span>
-        </div>
-      </article>
-
-      <!-- FEATURED #2: Test Automation Framework -->
-      <article class="project-featured" data-reveal data-tilt>
-        <div class="featured-meta">
-          <span class="mono">Featured · Open Source</span>
-          <span class="mono dim">2026</span>
-        </div>
-
-        <h3 class="project-title">
-          API Test Automation <em>Framework</em>
-        </h3>
-
-        <p class="project-desc">
-          A two-layer test automation framework demonstrating modern Python QA practices:
-          <strong>REST API tests</strong> with <code>requests</code> + <code>jsonschema</code>,
-          and <strong>end-to-end UI tests</strong> with Playwright using the Page Object Model.
-          Containerised with Docker and validated by GitHub Actions on every push. Mirrored
-          in a Java + RestAssured + JUnit 5 layer for cross-language coverage.
-        </p>
-
-        <div class="project-stats">
-          <div class="stat-item">
-            <div class="stat-value">2</div>
-            <div class="stat-name">Test layers<br/><span>API + UI</span></div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">2</div>
-            <div class="stat-name">Languages<br/><span>Python + Java</span></div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">CI</div>
-            <div class="stat-name">GitHub Actions<br/><span>on every push</span></div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value">5+</div>
-            <div class="stat-name">Pytest markers<br/><span>smoke · regression · ui</span></div>
-          </div>
-        </div>
-
-        <div class="project-tags">
-          <span>Python 3.13</span>
-          <span>Pytest</span>
-          <span>Playwright</span>
-          <span>requests</span>
-          <span>jsonschema</span>
-          <span>Page Object Model</span>
-          <span>Docker</span>
-          <span>GitHub Actions</span>
-          <span>Java + RestAssured</span>
-          <span>JUnit 5</span>
-          <span>Maven</span>
-        </div>
-
-        <div class="project-actions">
-          <a href="https://github.com/mehmoodanas/api-test-automation" target="_blank" rel="noopener" class="btn btn-primary">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-            <span>View on GitHub</span>
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-          </a>
-          <a href="https://github.com/mehmoodanas/api-test-automation/blob/main/README.md" target="_blank" rel="noopener" class="btn btn-ghost">
-            <span>Read the README</span>
-          </a>
-        </div>
-      </article>
-
-      <!-- ADDITIONAL PROJECTS SUB-HEADING -->
-      <div class="sub-heading" data-reveal>
-        <span class="line-h"></span>
-        <span class="meta-label">Additional Projects</span>
-      </div>
-
-      <h3 class="sub-title" data-reveal>
-        Coursework &amp; <em>side work</em>.
-      </h3>
-
-      <div class="project-grid">
-        <article class="project-card" data-reveal data-tilt>
-          <div class="card-meta">
-            <span class="mono">Systems Modelling · 2024</span>
-            <svg class="card-arrow" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-          </div>
-          <h3>Customer Support <em>Ticketing System</em></h3>
-          <p>Full requirements analysis and end-to-end process modelling in <strong>BPMN</strong>, <strong>EFFBD</strong>, and sequence diagrams — designing how a real ticketing workflow flows through an organisation.</p>
-          <div class="card-tags">
-            <span>BPMN</span><span>EFFBD</span><span>Sequence Diagrams</span><span>Requirements</span>
-          </div>
-        </article>
-
-        <article class="project-card" data-reveal data-tilt>
-          <div class="card-meta">
-            <span class="mono">DBMS Coursework · 2024</span>
-            <svg class="card-arrow" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-          </div>
-          <h3>Database Management <em>Coursework</em></h3>
-          <p>Designed <strong>normalised relational schemas in MySQL</strong> and wrote analytical SQL — joins, aggregations, and window functions — over multi-entity datasets to answer real reporting questions.</p>
-          <div class="card-tags">
-            <span>MySQL</span><span>SQL</span><span>Joins</span><span>Window Fns</span><span>Schema Design</span>
-          </div>
-        </article>
-
-        <article class="project-card" data-reveal data-tilt>
-          <div class="card-meta">
-            <span class="mono">In Progress · 2026</span>
-            <svg class="card-arrow" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-          </div>
-          <h3>Selenium UI <em>Test Suite</em></h3>
-          <p>End-to-end browser tests for an e-commerce flow with cross-browser parallelism and <strong>Allure</strong> reporting — extending the Java automation muscle from the main framework.</p>
-          <div class="card-tags">
-            <span>Selenium</span><span>Java</span><span>Allure</span><span>Cross-browser</span>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- STACK -->
-  <section id="stack" class="section">
-    <div class="container">
-      <div class="section-meta" data-reveal>
-        <span class="line-h"></span>
-        <span class="meta-label">Toolkit</span>
-      </div>
-
-      <h2 class="section-title" data-reveal>
-        The tools I work <em>with</em>.
-      </h2>
-
-      <div class="stack-list">
-        <div class="stack-row" data-reveal>
-          <h3 class="stack-name">Programming</h3>
-          <p class="stack-items">Python · Java · C++ · SQL · JavaScript · Bash</p>
-        </div>
-        <div class="stack-row" data-reveal>
-          <h3 class="stack-name">ML &amp; Data Science</h3>
-          <p class="stack-items">PyTorch · Hugging Face Transformers · scikit-learn · pandas · NumPy</p>
-        </div>
-        <div class="stack-row" data-reveal>
-          <h3 class="stack-name">NLP &amp; Models</h3>
-          <p class="stack-items">BERT · DistilBERT · Sentence-BERT · supervised &amp; unsupervised learning · model evaluation</p>
-        </div>
-        <div class="stack-row" data-reveal>
-          <h3 class="stack-name">Backend &amp; Web</h3>
-          <p class="stack-items">Flask · Spring Boot · REST APIs · HTML / JS</p>
-        </div>
-        <div class="stack-row" data-reveal>
-          <h3 class="stack-name">Test Frameworks</h3>
-          <p class="stack-items">Pytest · Playwright · RestAssured · JUnit 5 · Selenium</p>
-        </div>
-        <div class="stack-row" data-reveal>
-          <h3 class="stack-name">Data &amp; Storage</h3>
-          <p class="stack-items">MySQL · Apache Spark fundamentals · Databricks · Jupyter · EDA</p>
-        </div>
-        <div class="stack-row" data-reveal>
-          <h3 class="stack-name">DevOps &amp; Tooling</h3>
-          <p class="stack-items">Git · GitHub Actions · Docker · docker-compose · VS Code · IntelliJ · MATLAB · Linux</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- LANGUAGES -->
-  <section id="languages" class="section section-lang">
-    <div class="container">
-      <div class="section-meta" data-reveal>
-        <span class="line-h"></span>
-        <span class="meta-label">Languages</span>
-      </div>
-
-      <h2 class="section-title" data-reveal>
-        I speak <em>five</em>.
-      </h2>
-
-      <div class="lang-grid">
-        <div class="lang-card" data-reveal data-tilt>
-          <span class="lang-flag" aria-hidden="true">اُردُو</span>
-          <h3>Urdu</h3>
-          <span class="lang-level mono">Native</span>
-        </div>
-        <div class="lang-card" data-reveal data-tilt>
-          <span class="lang-flag" aria-hidden="true">EN</span>
-          <h3>English</h3>
-          <span class="lang-level mono">B2 (IELTS)</span>
-        </div>
-        <div class="lang-card" data-reveal data-tilt>
-          <span class="lang-flag" aria-hidden="true">ਪੰਜਾਬੀ</span>
-          <h3>Punjabi</h3>
-          <span class="lang-level mono">Fluent</span>
-        </div>
-        <div class="lang-card" data-reveal data-tilt>
-          <span class="lang-flag" aria-hidden="true">RU</span>
-          <h3>Russian</h3>
-          <span class="lang-level mono">Elementary</span>
-        </div>
-        <div class="lang-card" data-reveal data-tilt>
-          <span class="lang-flag" aria-hidden="true">LV</span>
-          <h3>Latvian</h3>
-          <span class="lang-level mono">Basic</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contact" class="section section-contact">
-    <div class="container">
-      <div class="section-meta" data-reveal>
-        <span class="line-h"></span>
-        <span class="meta-label">Contact</span>
-      </div>
-
-      <h2 class="contact-title" data-reveal>
-        Building something with <em>AI</em> or need a careful tester?<br/>
-        <span class="contact-sub">Let's talk.</span>
-      </h2>
-
-      <a href="mailto:mehmoodanas90@gmail.com" class="contact-email" data-reveal>
-        <span>mehmoodanas90@gmail.com</span>
-        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </a>
-
-      <div class="contact-meta" data-reveal>
-        <span class="mono">📍 Riga, Latvia</span>
-        <span class="mono dim">·</span>
-        <a href="tel:+37122025169" class="mono contact-phone">(+371) 22025169</a>
-      </div>
-
-      <div class="contact-socials" data-reveal>
-        <a href="https://github.com/mehmoodanas" target="_blank" rel="noopener">
-          <span class="mono dim">↗</span>
-          <span>GitHub</span>
-        </a>
-        <a href="#" target="_blank" rel="noopener">
-          <span class="mono dim">↗</span>
-          <span>LinkedIn</span>
-        </a>
-        <a href="mailto:mehmoodanas90@gmail.com">
-          <span class="mono dim">@</span>
-          <span>Email</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container footer-inner">
-      <span class="mono">© 2026 — Anas Mehmood</span>
-      <span class="mono dim">Built with care · HTML · CSS · JavaScript</span>
-      <a href="#home" class="back-top mono">Back to top ↑</a>
-    </div>
-  </footer>
-
-  <!-- Three.js loaded only because we have a single small scene in hero -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r150/three.min.js"></script>
   <script src="script.js"></script>
 </body>
