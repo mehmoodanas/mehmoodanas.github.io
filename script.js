@@ -143,7 +143,7 @@
       pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
       const pMat = new THREE.PointsMaterial({
         size: 0.05,
-        color: 0xf7d774,
+        color: 0xbef777,
         transparent: true,
         opacity: 0.7,
         sizeAttenuation: true,
@@ -233,7 +233,7 @@
       const g  = new THREE.IcosahedronGeometry(1.2, 1);
       const wg = new THREE.WireframeGeometry(g);
       const mt = new THREE.LineBasicMaterial({
-        color: 0xf4d35e,
+        color: 0xbef777,
         transparent: true,
         opacity: 0.5,
       });

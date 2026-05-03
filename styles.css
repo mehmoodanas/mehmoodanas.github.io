@@ -37,9 +37,9 @@ em { font-style: italic; }
   --line:      rgba(236, 235, 224, 0.1);
   --line-soft: rgba(236, 235, 224, 0.04);
 
-  --highlight: #f7d774;       /* highlighter yellow — the only color */
-  --highlight-2: #fce98c;
-  --hl-text:   #1a1d2c;       /* dark text inside highlights */
+  --highlight: #bef777;       /* bright lime — the only color */
+  --highlight-2: #d6fa9e;
+  --hl-text:   #0a0a0a;       /* near-black text inside highlights */
 
   --serif: 'Fraunces', 'Times New Roman', Georgia, serif;
   --sans:  'Inter', -apple-system, sans-serif;
@@ -114,24 +114,19 @@ body:not(.loaded) { overflow: hidden; }
 .logo:hover .logo-dot { transform: scale(1.5); }
 
 /* =========================================================
-   HIGHLIGHTER EMPHASIS — bold + yellow stripe
+   HIGHLIGHTER EMPHASIS — bold + FULL-WORD lime background
    ========================================================= */
 .hl {
   font-family: var(--sans);
   font-weight: 700;
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    transparent 55%,
-    var(--highlight) 55%,
-    var(--highlight) 92%,
-    transparent 92%
-  );
-  padding: 0 4px;
-  margin: 0 -2px;
-  letter-spacing: -0.005em;
+  background: var(--highlight);
   color: var(--hl-text);
-  border-radius: 1px;
+  padding: 1px 7px;
+  margin: 0 1px;
+  border-radius: 3px;
+  letter-spacing: -0.005em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 /* ---------- 5. LAYOUT ---------- */
