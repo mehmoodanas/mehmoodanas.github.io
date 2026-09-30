@@ -1,0 +1,224 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/portfolio';
+import { url } from '../utils/url';
+
+const links = [
+  { label: 'About', id: 'about' },
+  { label: 'Skills', id: 'skills' },
+  { label: 'Projects', id: 'projects' },
+  { label: 'Education', id: 'education' },
+  { label: 'Contact', id: 'contact' },
+];
+---
+
+<header class="site-header" data-header>
+  <div class="container bar">
+    <a class="brand" href={url('/')} aria-label={`${site.name}, home`}>
+      <span class="brand-mark" aria-hidden="true">AM</span>
+      <span class="brand-name">{site.name}</span>
+    </a>
+
+    <nav id="site-nav" class="nav" aria-label="Primary" data-nav>
+      <ul>
+        {
+          links.map((link) => (
+            <li>
+              <a href={url(`/#${link.id}`)} data-section={link.id}>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a
+        class="btn btn--primary btn--sm nav-cv"
+        href={url(site.cv.href)}
+        download={site.cv.downloadName}
+      >
+        <Icon name="download" size={16} />
+        Download CV
+      </a>
+    </nav>
+
+    <button
+      class="menu-btn"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      aria-label="Open menu"
+      data-menu-btn
+    >
+      <span class="menu-icon menu-icon--open"><Icon name="menu" size={24} /></span>
+      <span class="menu-icon menu-icon--close"><Icon name="close" size={24} /></span>
+    </button>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(246 245 242 / 0.86);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    backdrop-filter: saturate(1.4) blur(14px);
+    border-bottom: 1px solid transparent;
+    transition:
+      border-color 0.25s var(--ease),
+      box-shadow 0.25s var(--ease);
+  }
+  .site-header[data-scrolled],
+  .site-header[data-open] {
+    border-bottom-color: var(--line);
+    box-shadow: 0 6px 24px -16px rgb(21 23 28 / 0.25);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: var(--header-h);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: var(--ink);
+    font-weight: 680;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+  .brand:hover {
+    color: var(--ink);
+  }
+  .brand-mark {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 0.7rem;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.25),
+      0 4px 10px -4px rgb(14 107 120 / 0.6);
+  }
+
+  .nav ul {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .nav li a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-pill);
+    color: var(--ink-2);
+    font-size: 0.96rem;
+    font-weight: 550;
+    text-decoration: none;
+    transition:
+      background-color 0.2s var(--ease),
+      color 0.2s var(--ease);
+  }
+  .nav li a:hover {
+    background: var(--bg-soft);
+    color: var(--ink);
+  }
+  .nav li a[aria-current] {
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+  }
+
+  .menu-btn {
+    display: none;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    cursor: pointer;
+  }
+  .menu-icon--close {
+    display: none;
+  }
+  .site-header[data-open] .menu-icon--open {
+    display: none;
+  }
+  .site-header[data-open] .menu-icon--close {
+    display: block;
+  }
+
+  /* ── Mobile: menu becomes a dropdown panel ── */
+  @media (max-width: 55.99rem) {
+    .menu-btn {
+      display: grid;
+    }
+    .nav {
+      position: absolute;
+      inset: 100% 0 auto 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+      padding: 0.75rem var(--gutter) 1.25rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 24px 36px -24px rgb(21 23 28 / 0.35);
+    }
+    .nav ul {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.15rem;
+    }
+    .nav li a {
+      width: 100%;
+      min-height: 3rem;
+      padding: 0.6rem 0.9rem;
+      border-radius: var(--radius-sm);
+      font-size: 1.05rem;
+    }
+    .nav-cv {
+      width: 100%;
+    }
+
+    /* Only hide the panel once JavaScript is available to open it again. */
+    :global(.js) .nav {
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(-8px);
+      pointer-events: none;
+      transition:
+        opacity 0.2s var(--ease),
+        transform 0.2s var(--ease),
+        visibility 0s linear 0.2s;
+    }
+    :global(.js) .site-header[data-open] .nav {
+      visibility: visible;
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+      transition-delay: 0s;
+    }
+  }
+
+  @media (max-width: 26rem) {
+    .brand-name {
+      font-size: 0.98rem;
+    }
+  }
+</style>

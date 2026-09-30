@@ -1,0 +1,127 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/portfolio';
+import { url } from '../utils/url';
+
+const year = new Date().getFullYear();
+const nav = [
+  { label: 'About', href: url('/#about') },
+  { label: 'Skills', href: url('/#skills') },
+  { label: 'Projects', href: url('/#projects') },
+  { label: 'Education', href: url('/#education') },
+  { label: 'Contact', href: url('/#contact') },
+];
+---
+
+<footer class="footer">
+  <div class="container inner">
+    <div class="who">
+      <p class="name">{site.name}</p>
+      <p class="muted small">{site.shortTitle} · {site.location}</p>
+    </div>
+
+    <nav aria-label="Footer">
+      <ul class="links">
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <ul class="social" aria-label="Professional links">
+      <li>
+        <a href={site.github} target="_blank" rel="noopener noreferrer">
+          <Icon name="github" size={18} />
+          <span>GitHub</span>
+          <span class="visually-hidden">(opens in a new tab)</span>
+        </a>
+      </li>
+      <li>
+        <a href={site.linkedin} target="_blank" rel="noopener noreferrer">
+          <Icon name="linkedin" size={18} />
+          <span>LinkedIn</span>
+          <span class="visually-hidden">(opens in a new tab)</span>
+        </a>
+      </li>
+      <li>
+        <a href={`mailto:${site.email}`}>
+          <Icon name="mail" size={18} />
+          <span>Email</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="container base">
+    <p class="small muted">© {year} {site.name}</p>
+    <a class="small top" href="#top">Back to top ↑</a>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--line);
+    background: var(--bg-soft);
+    padding-block: clamp(2.5rem, 6vw, 4rem) 1.75rem;
+  }
+  .inner {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+  }
+  .name {
+    font-weight: 680;
+    letter-spacing: -0.02em;
+    font-size: 1.15rem;
+  }
+  .links,
+  .social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.25rem;
+  }
+  .links a,
+  .social a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2.5rem;
+    color: var(--ink-2);
+    font-weight: 550;
+    text-decoration: none;
+  }
+  .links a:hover,
+  .social a:hover {
+    color: var(--accent-ink);
+    text-decoration: underline;
+  }
+  .base {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+  }
+  .top {
+    color: var(--ink-2);
+    text-decoration: none;
+  }
+  .top:hover {
+    color: var(--accent-ink);
+    text-decoration: underline;
+  }
+
+  @media (min-width: 56rem) {
+    .inner {
+      grid-template-columns: 1.1fr 1fr auto;
+      align-items: center;
+      gap: 3rem;
+    }
+  }
+</style>

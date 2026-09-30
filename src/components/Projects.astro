@@ -1,0 +1,76 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import ProjectCard from './ProjectCard.astro';
+import ProjectMiniCard from './ProjectMiniCard.astro';
+import Icon from './Icon.astro';
+import { featuredProjects, otherProjects, site } from '../data/portfolio';
+---
+
+<section id="projects" class="section" aria-labelledby="projects-title">
+  <div class="container">
+    <SectionHeading
+      id="projects-title"
+      eyebrow="Projects"
+      title="Selected work"
+      lead="Three projects in depth, each with a case study, followed by coursework and learning projects."
+    />
+
+    <div class="featured">
+      {featuredProjects.map((project, index) => <ProjectCard project={project} index={index} />)}
+    </div>
+
+    {
+      otherProjects.length > 0 && (
+        <div class="more-block">
+          <h3 class="more-title reveal">More projects</h3>
+          <div class="grid">
+            {otherProjects.map((project, index) => (
+              <ProjectMiniCard project={project} index={index} />
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    <p class="all reveal">
+      <a class="text-link" href={site.github} target="_blank" rel="noopener noreferrer">
+        <Icon name="github" size={18} />
+        See all repositories on GitHub
+        <Icon name="external" size={16} />
+        <span class="visually-hidden">(opens in a new tab)</span>
+      </a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .featured {
+    display: grid;
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .more-block {
+    margin-top: clamp(3rem, 7vw, 5rem);
+  }
+  .more-title {
+    margin-bottom: 1.25rem;
+    font-size: 1.45rem;
+  }
+  .grid {
+    display: grid;
+    gap: 1.1rem;
+  }
+  .all {
+    margin-top: clamp(2rem, 5vw, 3rem);
+  }
+
+  @media (min-width: 40rem) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 64rem) {
+    .grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,195 @@
+---
+/**
+ * The single decorative 3D element: three layered "slabs" (model → service →
+ * tests) in an isometric pose, built with plain CSS transforms (no 3D library).
+ *
+ *  - It floats gently and tilts a few degrees toward the pointer.
+ *  - With "reduce motion" on, it stays perfectly still in its resting pose.
+ *  - Browsers without `transform-style: preserve-3d` get a flat stack of cards.
+ *  - It is purely decorative, so it is hidden from assistive technology.
+ */
+---
+
+<div class="stage" data-tilt-stage aria-hidden="true">
+  <div class="float">
+    <div class="scene">
+      <div class="floor"></div>
+      <div class="slab slab--1"><span class="tag">model</span></div>
+      <div class="slab slab--2"><span class="tag">service</span></div>
+      <div class="slab slab--3">
+        <span class="tag">tests</span>
+        <span class="ticks"><i></i><i></i><i></i></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .stage {
+    --px: 0;
+    --py: 0;
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    max-width: 30rem;
+    aspect-ratio: 1 / 1;
+    margin-inline: auto;
+    perspective: 1400px;
+    perspective-origin: 50% 40%;
+    pointer-events: none;
+  }
+
+  .float {
+    width: 64%;
+    transform-style: preserve-3d;
+  }
+
+  .scene {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 0.74;
+    transform-style: preserve-3d;
+    transform: rotateX(calc(58deg + var(--py) * -5deg)) rotateZ(calc(-36deg + var(--px) * 7deg));
+    transition: transform 0.5s var(--ease);
+  }
+
+  .slab {
+    --z: 0px;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid rgb(21 23 28 / 0.1);
+    border-radius: 1.4rem;
+    background: var(--surface);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.9) inset,
+      0 18px 30px -12px rgb(21 23 28 / 0.28);
+    transform: translateZ(var(--z));
+    transform-style: preserve-3d;
+  }
+
+  .slab--1 {
+    --z: 0px;
+    background:
+      radial-gradient(circle at 1px 1px, rgb(21 23 28 / 0.16) 1.3px, transparent 1.6px) 0 0 / 18px
+        18px,
+      linear-gradient(145deg, #ffffff, #ebe9e3);
+  }
+  .slab--2 {
+    --z: 44px;
+    background:
+      linear-gradient(rgb(21 23 28 / 0.09), rgb(21 23 28 / 0.09)) 1.1rem 1.1rem / 46% 0.5rem
+        no-repeat,
+      linear-gradient(rgb(21 23 28 / 0.07), rgb(21 23 28 / 0.07)) 1.1rem 2.3rem / 62% 0.5rem
+        no-repeat,
+      linear-gradient(rgb(21 23 28 / 0.07), rgb(21 23 28 / 0.07)) 1.1rem 3.5rem / 34% 0.5rem
+        no-repeat,
+      linear-gradient(145deg, #ffffff, #f1efea);
+  }
+  .slab--3 {
+    --z: 88px;
+    border-color: rgb(14 107 120 / 0.55);
+    background: linear-gradient(145deg, #2a8391, var(--accent) 55%, #0a5560);
+    color: #fff;
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.3) inset,
+      0 22px 34px -12px rgb(14 107 120 / 0.5);
+  }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .slab--3 .tag {
+    color: rgb(255 255 255 / 0.85);
+  }
+
+  .ticks {
+    display: flex;
+    gap: 0.35rem;
+  }
+  .ticks i {
+    display: block;
+    width: 1.05rem;
+    height: 1.05rem;
+    border-radius: 0.35rem;
+    background: rgb(255 255 255 / 0.22);
+    position: relative;
+  }
+  .ticks i::after {
+    content: '';
+    position: absolute;
+    left: 0.3rem;
+    top: 0.14rem;
+    width: 0.3rem;
+    height: 0.55rem;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(40deg);
+  }
+
+  .floor {
+    position: absolute;
+    inset: -8% -8%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(21 23 28 / 0.22), transparent 72%);
+    filter: blur(14px);
+    transform: translateZ(-36px);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .float {
+      animation: drift 7s ease-in-out infinite alternate;
+    }
+    @keyframes drift {
+      from {
+        transform: translate3d(0, 6px, 0);
+      }
+      to {
+        transform: translate3d(0, -10px, 0);
+      }
+    }
+  }
+
+  /* Reduced motion: keep the resting pose, remove all movement. */
+  @media (prefers-reduced-motion: reduce) {
+    .scene {
+      transition: none;
+      transform: rotateX(58deg) rotateZ(-36deg);
+    }
+  }
+
+  /* Static flat fallback when 3D transforms are unavailable. */
+  @supports not (transform-style: preserve-3d) {
+    .scene {
+      transform: none;
+      aspect-ratio: 1 / 0.72;
+    }
+    .slab--1 {
+      transform: translate(-18px, 26px);
+    }
+    .slab--2 {
+      transform: translate(0, 0);
+    }
+    .slab--3 {
+      transform: translate(18px, -26px);
+    }
+    .floor {
+      display: none;
+    }
+  }
+
+  @media (max-width: 55.99rem) {
+    .stage {
+      max-width: 19rem;
+    }
+  }
+</style>

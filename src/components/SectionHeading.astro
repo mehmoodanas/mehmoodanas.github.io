@@ -1,0 +1,31 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  /** id of the <h2>, referenced by the section's aria-labelledby. */
+  id: string;
+}
+const { eyebrow, title, lead, id } = Astro.props;
+---
+
+<header class="head reveal">
+  <p class="eyebrow">{eyebrow}</p>
+  <h2 id={id}>{title}</h2>
+  {lead && <p class="lead">{lead}</p>}
+</header>
+
+<style>
+  .head {
+    display: grid;
+    gap: 0.9rem;
+    justify-items: start;
+    max-width: 44rem;
+    margin-bottom: clamp(2rem, 5vw, 3.25rem);
+  }
+  .lead {
+    color: var(--ink-2);
+    font-size: 1.12rem;
+    line-height: 1.7;
+  }
+</style>

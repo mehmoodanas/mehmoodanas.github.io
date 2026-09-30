@@ -1,0 +1,155 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import ProjectLinks from './ProjectLinks.astro';
+import ThesisDiagram from './ThesisDiagram.astro';
+import type { Project } from '../data/types';
+import { url } from '../utils/url';
+
+interface Props {
+  project: Project;
+  index: number;
+}
+const { project, index } = Astro.props;
+
+const figure = project.figures?.[0];
+const visibleTech = project.tech.slice(0, 6);
+const extraTech = project.tech.length - visibleTech.length;
+const flip = index % 2 === 1;
+const caseStudy = url(`/projects/${project.slug}`);
+---
+
+<article
+  class:list={['card', 'feature', 'reveal', { flip }]}
+  aria-labelledby={`${project.slug}-title`}
+>
+  <div class="media">
+    <div class="frame">
+      {
+        figure ? (
+          <Image
+            src={figure.src}
+            alt={figure.alt}
+            widths={[480, 720, 1000]}
+            sizes="(min-width: 56rem) 520px, calc(100vw - 4rem)"
+            loading="lazy"
+            decoding="async"
+            class="shot"
+          />
+        ) : (
+          <ThesisDiagram compact />
+        )
+      }
+    </div>
+  </div>
+
+  <div class="body">
+    <p class="meta">
+      <span class="chip chip--accent">{project.kind}</span>
+      {project.period && <span class="period">{project.period}</span>}
+    </p>
+    <h3 id={`${project.slug}-title`}>{project.title}</h3>
+    <p class="muted summary">{project.summary}</p>
+
+    <ul class="chip-list" aria-label="Technologies">
+      {visibleTech.map((tech) => <li class="chip">{tech}</li>)}
+      {extraTech > 0 && <li class="chip">+{extraTech} more</li>}
+    </ul>
+
+    <div class="actions">
+      <a class="btn btn--primary btn--sm" href={caseStudy}>
+        Read case study
+        <Icon name="arrow-right" size={16} />
+        <span class="visually-hidden"> for {project.title}</span>
+      </a>
+      <ProjectLinks links={project.links} small />
+    </div>
+  </div>
+</article>
+
+<style>
+  .feature {
+    display: grid;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+  @media (hover: hover) {
+    .feature:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+  }
+
+  .media {
+    display: grid;
+    align-items: center;
+    padding: clamp(1rem, 3vw, 1.75rem);
+    background: linear-gradient(160deg, var(--bg-soft), #e8e5de);
+  }
+
+  /* Two stacked layers behind the screenshot give a little depth */
+  .frame {
+    position: relative;
+    isolation: isolate;
+  }
+  .frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: var(--radius-sm);
+    background: rgb(255 255 255 / 0.65);
+    border: 1px solid var(--line);
+    transform: translate(10px, 10px) scale(0.985);
+    box-shadow: var(--shadow-sm);
+  }
+  .shot {
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    box-shadow: var(--shadow-md);
+  }
+  .frame :global(.diagram) {
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+  }
+
+  .body {
+    display: grid;
+    align-content: center;
+    gap: 1rem;
+    padding: clamp(1.4rem, 4vw, 2.5rem);
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .period {
+    color: var(--ink-3);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+  }
+  .summary {
+    font-size: 1.05rem;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.4rem;
+  }
+
+  @media (min-width: 56rem) {
+    .feature {
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    }
+    .flip .media {
+      order: 2;
+    }
+  }
+</style>

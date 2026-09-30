@@ -1,0 +1,113 @@
+---
+/**
+ * Schematic of the thesis system's components, taken from the CV description:
+ * a Python/Flask ML inference micro-service, a Java/Spring Boot dialogue
+ * backend and an HTML/JS front-end, all using REST APIs. It is a diagram, not a
+ * screenshot, and deliberately does not draw specific call directions.
+ */
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+---
+
+<figure class:list={['diagram', { compact }]}>
+  <div class="parts">
+    <div class="part">
+      <span class="lang">HTML / JavaScript</span>
+      <strong>Front-end</strong>
+    </div>
+    <div class="part">
+      <span class="lang">Java · Spring Boot</span>
+      <strong>Dialogue backend</strong>
+    </div>
+    <div class="part part--ml">
+      <span class="lang">Python · Flask</span>
+      <strong>ML inference service</strong>
+      <span class="models"><i>DistilBERT</i><i>Sentence-BERT</i></span>
+    </div>
+  </div>
+  <div class="rest"><span>REST APIs</span></div>
+  <figcaption class="visually-hidden">
+    Components of the thesis system: an HTML/JavaScript front-end, a Java Spring Boot dialogue
+    backend and a Python Flask machine-learning inference service, using REST APIs.
+  </figcaption>
+</figure>
+
+<style>
+  .diagram {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+    padding: clamp(1rem, 3vw, 1.6rem);
+    background:
+      radial-gradient(circle at 1px 1px, rgb(21 23 28 / 0.09) 1px, transparent 1.4px) 0 0 / 16px
+        16px,
+      linear-gradient(160deg, #ffffff, #efede8);
+  }
+  .parts {
+    display: grid;
+    gap: 0.7rem;
+  }
+  .part {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+  }
+  .part strong {
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+  }
+  .lang {
+    color: var(--ink-3);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .part--ml {
+    border-color: rgb(14 107 120 / 0.5);
+    background: linear-gradient(160deg, #fff, var(--accent-soft));
+  }
+  .models {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.3rem;
+  }
+  .models i {
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.74rem;
+    font-style: normal;
+    font-weight: 600;
+  }
+  .rest {
+    display: grid;
+    place-items: center;
+    padding: 0.45rem;
+    border: 1px dashed var(--accent);
+    border-radius: 999px;
+    color: var(--accent-ink);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  @media (min-width: 40rem) {
+    .parts {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .compact .parts {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,63 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { skills } from '../data/portfolio';
+---
+
+<section id="skills" class="section section--tint" aria-labelledby="skills-title">
+  <div class="container">
+    <SectionHeading
+      id="skills-title"
+      eyebrow="Skills"
+      title="The tools I work with"
+      lead="Grouped by the kind of work they support. Everything listed comes from my CV or is demonstrated in a public project."
+    />
+
+    <ul class="grid">
+      {
+        skills.map((group, index) => (
+          <li class="card card--lift group reveal" style={`--i: ${index % 3}`}>
+            <h3>{group.title}</h3>
+            <ul class="chip-list">
+              {group.items.map((item) => (
+                <li class="chip">{item}</li>
+              ))}
+            </ul>
+            {group.evidence && <p class="evidence">Evidence: {group.evidence}</p>}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    gap: 1.1rem;
+  }
+  .group {
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+  .evidence {
+    margin-top: auto;
+    padding-top: 0.25rem;
+    color: var(--ink-3);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.03em;
+  }
+
+  @media (min-width: 40rem) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 64rem) {
+    .grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>
