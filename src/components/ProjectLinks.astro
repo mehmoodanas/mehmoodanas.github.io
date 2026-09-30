@@ -1,0 +1,29 @@
+---
+import Icon from './Icon.astro';
+import type { LinkItem } from '../data/types';
+
+interface Props {
+  links: LinkItem[];
+  small?: boolean;
+}
+const { links, small = false } = Astro.props;
+---
+
+{
+  links.length > 0 && (
+    <>
+      {links.map((link) => (
+        <a
+          class:list={['btn', { 'btn--sm': small }]}
+          href={link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Icon name={link.kind === 'repo' ? 'github' : 'external'} size={small ? 16 : 18} />
+          {link.label}
+          <span class="visually-hidden"> (opens in a new tab)</span>
+        </a>
+      ))}
+    </>
+  )
+}

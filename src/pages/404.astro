@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/portfolio';
+import { url } from '../utils/url';
+---
+
+<BaseLayout title={`Page not found · ${site.name}`} description="This page does not exist. Return to the portfolio home page to see projects, skills and contact details.">
+  <section class="missing container" aria-labelledby="missing-title">
+    <p class="eyebrow">404</p>
+    <h1 id="missing-title">That page doesn’t exist</h1>
+    <p class="muted">The link may be out of date. The portfolio home page has everything.</p>
+    <a class="btn btn--primary" href={url('/')}>
+      <Icon name="arrow-left" size={18} />
+      Back to the home page
+    </a>
+  </section>
+</BaseLayout>
+
+<style>
+  .missing {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+    min-height: 55vh;
+    align-content: center;
+    padding-block: var(--section-y);
+  }
+  .missing h1 {
+    font-size: clamp(2.2rem, 4vw + 1rem, 3.5rem);
+  }
+</style>

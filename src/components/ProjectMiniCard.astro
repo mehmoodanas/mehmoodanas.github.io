@@ -1,0 +1,115 @@
+---
+import ProjectLinks from './ProjectLinks.astro';
+import type { Project } from '../data/types';
+
+interface Props {
+  project: Project;
+  index: number;
+}
+const { project, index } = Astro.props;
+---
+
+<article
+  class="card card--lift mini reveal"
+  style={`--i: ${index % 3}`}
+  aria-labelledby={`${project.slug}-title`}
+>
+  <p class="meta">
+    <span class="chip chip--accent">{project.kind}</span>
+    {project.period && <span class="period">{project.period}</span>}
+  </p>
+  <h3 id={`${project.slug}-title`}>{project.title}</h3>
+  <p class="muted">{project.summary}</p>
+
+  <ul class="chip-list" aria-label="Technologies">
+    {project.tech.map((tech) => <li class="chip">{tech}</li>)}
+  </ul>
+
+  <details class="more">
+    <summary>What it covered</summary>
+    <ul>
+      {project.features.map((feature) => <li>{feature}</li>)}
+    </ul>
+  </details>
+
+  {
+    project.links.length > 0 && (
+      <div class="actions">
+        <ProjectLinks links={project.links} small />
+      </div>
+    )
+  }
+</article>
+
+<style>
+  .mini {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.5rem;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .period {
+    color: var(--ink-3);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+  }
+
+  .more {
+    margin-top: auto;
+    border-top: 1px solid var(--line);
+    padding-top: 0.75rem;
+  }
+  .more summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 2.5rem;
+    color: var(--accent-ink);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+  }
+  .more summary::-webkit-details-marker {
+    display: none;
+  }
+  .more summary::after {
+    content: '+';
+    display: grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    font-size: 1.1rem;
+    line-height: 1;
+    transition: transform 0.2s var(--ease);
+  }
+  .more[open] summary::after {
+    content: '–';
+  }
+  .more ul {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding-left: 1.1rem;
+    list-style: disc;
+    color: var(--ink-2);
+    font-size: 0.95rem;
+  }
+  .more li::marker {
+    color: var(--accent);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+</style>

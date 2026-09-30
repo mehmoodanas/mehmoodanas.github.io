@@ -1,0 +1,444 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import ProjectLinks from '../../components/ProjectLinks.astro';
+import ThesisDiagram from '../../components/ThesisDiagram.astro';
+import { featuredProjects, site } from '../../data/portfolio';
+import type { Project } from '../../data/types';
+import { url } from '../../utils/url';
+
+export function getStaticPaths() {
+  return featuredProjects.map((project, index) => ({
+    params: { slug: project.slug },
+    props: {
+      project,
+      previous: featuredProjects[(index - 1 + featuredProjects.length) % featuredProjects.length],
+      next: featuredProjects[(index + 1) % featuredProjects.length],
+    },
+  }));
+}
+
+interface Props {
+  project: Project;
+  previous: Project;
+  next: Project;
+}
+const { project, previous, next } = Astro.props;
+
+const hasThesisDiagram = project.slug === 'customer-service-ai-thesis';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: project.title,
+  description: project.summary,
+  author: { '@type': 'Person', name: site.name },
+  keywords: project.tech.join(', '),
+  ...(project.links[0] ? { url: project.links[0].href } : {}),
+};
+---
+
+<BaseLayout
+  title={`${project.title} · ${site.name}`}
+  description={project.summary}
+  jsonLd={jsonLd}
+>
+  <article class="page" aria-labelledby="project-title">
+    <div class="container">
+      <a class="back" href={url('/#projects')}>
+        <Icon name="arrow-left" size={18} />
+        All projects
+      </a>
+
+      <header class="head">
+        <p class="meta">
+          <span class="chip chip--accent">{project.kind}</span>
+          {project.period && <span class="period">{project.period}</span>}
+        </p>
+        <h1 id="project-title">{project.title}</h1>
+        <p class="lead">{project.summary}</p>
+
+        {
+          project.links.length > 0 && (
+            <div class="actions">
+              <ProjectLinks links={project.links} />
+            </div>
+          )
+        }
+      </header>
+
+      <div class="layout">
+        <div class="content">
+          <section aria-labelledby="purpose-title" class="block">
+            <h2 id="purpose-title">Purpose</h2>
+            <p>{project.purpose}</p>
+          </section>
+
+          <section aria-labelledby="contribution-title" class="block">
+            <h2 id="contribution-title">My contribution</h2>
+            <p>{project.contribution}</p>
+          </section>
+
+          <section aria-labelledby="features-title" class="block">
+            <h2 id="features-title">Key features</h2>
+            <ul class="features">
+              {project.features.map((feature) => <li>{feature}</li>)}
+            </ul>
+          </section>
+
+          {
+            hasThesisDiagram && (
+              <section aria-labelledby="architecture-title" class="block">
+                <h2 id="architecture-title">System components</h2>
+                <div class="diagram-card">
+                  <ThesisDiagram />
+                </div>
+                <p class="caption">
+                  A schematic of the three components described in my CV. It is a diagram, not a
+                  screenshot.
+                </p>
+              </section>
+            )
+          }
+
+          {
+            project.results && project.results.length > 0 && (
+              <section aria-labelledby="results-title" class="block">
+                <h2 id="results-title">Documented results</h2>
+                <p class="muted">
+                  Taken from the project’s own findings report. They describe the dataset studied,
+                  not the marketplace today.
+                </p>
+                <ul class="results">
+                  {project.results.map((result) => (
+                    <li class="card result">
+                      <p class="value">{result.value}</p>
+                      <p class="result-label">{result.label}</p>
+                      {result.note && <p class="note">{result.note}</p>}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )
+          }
+
+          {
+            project.figures && project.figures.length > 0 && (
+              <section aria-labelledby="figures-title" class="block">
+                <h2 id="figures-title">
+                  {project.slug === 'api-test-automation' ? 'Screenshots and diagrams' : 'Charts from the analysis'}
+                </h2>
+                <div class="figures">
+                  {project.figures.map((figure) => (
+                    <figure class="figure">
+                      <a
+                        href={figure.src.src}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="figure-link"
+                      >
+                        <Image
+                          src={figure.src}
+                          alt={figure.alt}
+                          widths={[480, 800, 1200]}
+                          sizes="(min-width: 64rem) 740px, calc(100vw - 2.5rem)"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        <span class="visually-hidden">(open full size in a new tab)</span>
+                      </a>
+                      <figcaption>{figure.caption}</figcaption>
+                    </figure>
+                  ))}
+                </div>
+              </section>
+            )
+          }
+
+          {
+            project.limitations && project.limitations.length > 0 && (
+              <section aria-labelledby="limitations-title" class="block">
+                <h2 id="limitations-title">Limitations</h2>
+                <ul class="features">
+                  {project.limitations.map((item) => <li>{item}</li>)}
+                </ul>
+              </section>
+            )
+          }
+        </div>
+
+        <aside class="side card" aria-labelledby="glance-title">
+          <h2 id="glance-title">At a glance</h2>
+          <dl>
+            <div>
+              <dt>Type</dt>
+              <dd>{project.kind}</dd>
+            </div>
+            {
+              project.period && (
+                <div>
+                  <dt>Period</dt>
+                  <dd>{project.period}</dd>
+                </div>
+              )
+            }
+            <div>
+              <dt>Technologies</dt>
+              <dd>
+                <ul class="chip-list">
+                  {project.tech.map((tech) => <li class="chip">{tech}</li>)}
+                </ul>
+              </dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
+
+      <nav class="pager" aria-label="More projects">
+        <a class="card card--lift pager-link" href={url(`/projects/${previous.slug}`)} rel="prev">
+          <span class="pager-label"><Icon name="arrow-left" size={16} /> Previous project</span>
+          <span class="pager-title">{previous.title}</span>
+        </a>
+        <a
+          class="card card--lift pager-link pager-next"
+          href={url(`/projects/${next.slug}`)}
+          rel="next"
+        >
+          <span class="pager-label">Next project <Icon name="arrow-right" size={16} /></span>
+          <span class="pager-title">{next.title}</span>
+        </a>
+      </nav>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: clamp(1.5rem, 4vw, 3rem) var(--section-y);
+  }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .back:hover {
+    text-decoration: underline;
+  }
+
+  .head {
+    display: grid;
+    gap: 1.1rem;
+    justify-items: start;
+    max-width: 50rem;
+    margin-block: clamp(1rem, 3vw, 2rem) clamp(2.5rem, 6vw, 4rem);
+  }
+  .head h1 {
+    font-size: clamp(2rem, 3.6vw + 1rem, 3.4rem);
+    letter-spacing: -0.035em;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .period {
+    color: var(--ink-3);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+  .lead {
+    color: var(--ink-2);
+    font-size: clamp(1.08rem, 0.6vw + 1rem, 1.25rem);
+    line-height: 1.7;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .layout {
+    display: grid;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: start;
+  }
+  .content {
+    display: grid;
+    gap: clamp(2rem, 5vw, 3rem);
+    min-width: 0;
+  }
+  .block {
+    display: grid;
+    gap: 0.9rem;
+    color: var(--ink-2);
+  }
+  .block h2,
+  .side h2 {
+    font-size: 1.45rem;
+    color: var(--ink);
+  }
+
+  .features {
+    display: grid;
+    gap: 0.7rem;
+    padding-left: 1.2rem;
+    list-style: disc;
+  }
+  .features li::marker {
+    color: var(--accent);
+  }
+
+  .diagram-card {
+    overflow: hidden;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+  }
+  .caption {
+    color: var(--ink-3);
+    font-size: 0.92rem;
+  }
+
+  .results {
+    display: grid;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+  .result {
+    display: grid;
+    gap: 0.35rem;
+    padding: 1.25rem 1.4rem;
+  }
+  .value {
+    color: var(--accent-ink);
+    font-size: clamp(1.8rem, 2vw + 1.2rem, 2.4rem);
+    font-weight: 720;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+  }
+  .result-label {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .note {
+    color: var(--ink-2);
+    font-size: 0.93rem;
+  }
+
+  .figures {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .figure {
+    margin: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .figure-link {
+    display: block;
+    overflow: hidden;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    box-shadow: var(--shadow-md);
+    transition:
+      transform 0.25s var(--ease),
+      box-shadow 0.25s var(--ease);
+  }
+  @media (hover: hover) {
+    .figure-link:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+  }
+  .figure img {
+    width: 100%;
+    height: auto;
+  }
+  .figure figcaption {
+    color: var(--ink-3);
+    font-size: 0.92rem;
+  }
+
+  .side {
+    display: grid;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+  }
+  .side dl {
+    display: grid;
+    gap: 1.1rem;
+    margin: 0;
+  }
+  .side dt {
+    margin-bottom: 0.35rem;
+    color: var(--accent-ink);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .side dd {
+    margin: 0;
+    font-weight: 550;
+  }
+
+  .pager {
+    display: grid;
+    gap: 1rem;
+    margin-top: clamp(3rem, 7vw, 5rem);
+  }
+  .pager-link {
+    display: grid;
+    gap: 0.35rem;
+    padding: 1.25rem 1.4rem;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .pager-link:hover {
+    color: var(--ink);
+  }
+  .pager-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--accent-ink);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .pager-title {
+    font-size: 1.1rem;
+    font-weight: 650;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+  }
+
+  @media (min-width: 56rem) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr) 19rem;
+    }
+    .side {
+      position: sticky;
+      top: calc(var(--header-h) + 1.5rem);
+    }
+    .pager {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .pager-next {
+      text-align: right;
+    }
+    .pager-next .pager-label {
+      justify-content: flex-end;
+    }
+  }
+</style>

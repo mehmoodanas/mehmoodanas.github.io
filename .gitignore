@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+# Local evidence used to write the content (not part of the website)
+_reference-material/
+*.log
+.qa-tools/
+.claude/

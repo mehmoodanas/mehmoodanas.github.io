@@ -1,0 +1,146 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import Icon from './Icon.astro';
+import { about, education, languages, site } from '../data/portfolio';
+
+const degree = education[0];
+---
+
+<section id="about" class="section" aria-labelledby="about-title">
+  <div class="container">
+    <SectionHeading
+      id="about-title"
+      eyebrow="About"
+      title="Building AI systems that are measured, tested and explained"
+    />
+
+    <div class="layout">
+      <div class="story reveal">
+        {about.paragraphs.map((text) => <p>{text}</p>)}
+
+        <div class="interests">
+          <h3 class="small-title">Interests</h3>
+          <ul class="chip-list">
+            {about.interests.map((item) => <li class="chip chip--accent">{item}</li>)}
+          </ul>
+        </div>
+      </div>
+
+      <aside class="facts card reveal" style="--i: 1" aria-label="Quick facts">
+        <dl>
+          <div>
+            <dt><Icon name="pin" size={18} /> Location</dt>
+            <dd>{site.location}</dd>
+          </div>
+          <div>
+            <dt><Icon name="award" size={18} /> Education</dt>
+            <dd>{degree.degree}, {degree.institution}</dd>
+          </div>
+          <div>
+            <dt><Icon name="layers" size={18} /> Focus</dt>
+            <dd>Applied machine learning, NLP and AI systems</dd>
+          </div>
+          <div>
+            <dt><Icon name="file" size={18} /> Languages</dt>
+            <dd>{languages.map((l) => `${l.name} (${l.level})`).join(' · ')}</dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+
+    <ul class="strengths">
+      {
+        about.strengths.map((item, index) => (
+          <li class="card card--lift reveal" style={`--i: ${index}`}>
+            <h3>{item.title}</h3>
+            <p class="muted">{item.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .layout {
+    display: grid;
+    gap: clamp(1.75rem, 4vw, 3rem);
+    align-items: start;
+  }
+
+  .story {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 42rem;
+    color: var(--ink-2);
+  }
+  .story > p:first-child {
+    color: var(--ink);
+    font-size: 1.15rem;
+  }
+
+  .small-title {
+    margin-bottom: 0.7rem;
+    color: var(--ink);
+    font-size: 0.95rem;
+    letter-spacing: 0;
+  }
+  .interests {
+    margin-top: 0.5rem;
+  }
+
+  .facts {
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+    box-shadow: var(--shadow-md);
+  }
+  .facts dl {
+    display: grid;
+    gap: 1.15rem;
+    margin: 0;
+  }
+  .facts dt {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.2rem;
+    color: var(--accent-ink);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .facts dd {
+    margin: 0;
+    color: var(--ink);
+    font-weight: 550;
+    line-height: 1.45;
+  }
+
+  .strengths {
+    display: grid;
+    gap: 1.1rem;
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+  }
+  .strengths li {
+    display: grid;
+    gap: 0.6rem;
+    padding: 1.5rem;
+  }
+  .strengths li::before {
+    content: '';
+    width: 2.25rem;
+    height: 0.3rem;
+    border-radius: 1rem;
+    background: var(--accent);
+  }
+
+  @media (min-width: 56rem) {
+    .layout {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.9fr);
+    }
+    .strengths {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>
