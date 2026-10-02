@@ -19,6 +19,20 @@ const links = [
       <span class="brand-name">{site.name}</span>
     </a>
 
+    <!-- The button comes BEFORE the nav in the DOM so that, once the menu is open,
+         the next Tab stop is the first menu link. -->
+    <button
+      class="menu-btn"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      aria-label="Menu"
+      data-menu-btn
+    >
+      <span class="menu-icon menu-icon--open"><Icon name="menu" size={24} /></span>
+      <span class="menu-icon menu-icon--close"><Icon name="close" size={24} /></span>
+    </button>
+
     <nav id="site-nav" class="nav" aria-label="Primary" data-nav>
       <ul>
         {
@@ -40,18 +54,6 @@ const links = [
         Download CV
       </a>
     </nav>
-
-    <button
-      class="menu-btn"
-      type="button"
-      aria-expanded="false"
-      aria-controls="site-nav"
-      aria-label="Open menu"
-      data-menu-btn
-    >
-      <span class="menu-icon menu-icon--open"><Icon name="menu" size={24} /></span>
-      <span class="menu-icon menu-icon--close"><Icon name="close" size={24} /></span>
-    </button>
   </div>
 </header>
 
@@ -60,13 +62,19 @@ const links = [
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgb(246 245 242 / 0.86);
-    -webkit-backdrop-filter: saturate(1.4) blur(14px);
-    backdrop-filter: saturate(1.4) blur(14px);
+    background: rgb(246 245 242 / 0.96);
     border-bottom: 1px solid transparent;
     transition:
       border-color 0.25s var(--ease),
       box-shadow 0.25s var(--ease);
+  }
+  /* Frosted glass only where it is cheap: large screens with a mouse. */
+  @media (hover: hover) and (min-width: 56rem) {
+    .site-header {
+      background: rgb(246 245 242 / 0.86);
+      -webkit-backdrop-filter: saturate(1.4) blur(14px);
+      backdrop-filter: saturate(1.4) blur(14px);
+    }
   }
   .site-header[data-scrolled],
   .site-header[data-open] {
@@ -86,6 +94,7 @@ const links = [
     display: inline-flex;
     align-items: center;
     gap: 0.7rem;
+    min-height: 2.75rem;
     color: var(--ink);
     font-weight: 680;
     letter-spacing: -0.02em;
@@ -107,7 +116,7 @@ const links = [
     letter-spacing: 0.02em;
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 0.25),
-      0 4px 10px -4px rgb(14 107 120 / 0.6);
+      0 4px 10px -4px rgb(var(--accent-rgb) / 0.6);
   }
 
   .nav ul {
@@ -123,7 +132,7 @@ const links = [
   .nav li a {
     display: inline-flex;
     align-items: center;
-    min-height: 2.5rem;
+    min-height: 2.75rem;
     padding: 0.35rem 0.85rem;
     border-radius: var(--radius-pill);
     color: var(--ink-2);
@@ -141,6 +150,14 @@ const links = [
   .nav li a[aria-current] {
     background: var(--accent-soft);
     color: var(--accent-ink);
+  }
+  /* The current-section pill is a background only, which disappears in forced-colors mode. */
+  @media (forced-colors: active) {
+    .nav li a[aria-current] {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 0.3em;
+    }
   }
 
   .menu-btn {
@@ -164,6 +181,13 @@ const links = [
     display: block;
   }
 
+  /* Short landscape phones: give the page more room. */
+  @media (max-height: 30rem) and (orientation: landscape) {
+    :global(:root) {
+      --header-h: 3.25rem;
+    }
+  }
+
   /* ── Mobile: menu becomes a dropdown panel ── */
   @media (max-width: 55.99rem) {
     .menu-btn {
@@ -179,6 +203,11 @@ const links = [
       background: var(--bg);
       border-bottom: 1px solid var(--line);
       box-shadow: 0 24px 36px -24px rgb(21 23 28 / 0.35);
+      /* Scrolls inside the panel on short screens instead of hiding the last items. */
+      max-height: calc(100vh - var(--header-h));
+      max-height: calc(100dvh - var(--header-h));
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
     .nav ul {
       flex-direction: column;
@@ -213,6 +242,39 @@ const links = [
       transform: none;
       pointer-events: auto;
       transition-delay: 0s;
+    }
+
+    /* Without JavaScript there is no toggle: show the links as a normal row under the brand. */
+    :global(html:not(.js)) .menu-btn {
+      display: none;
+    }
+    :global(html:not(.js)) .site-header {
+      position: static;
+    }
+    :global(html:not(.js)) .bar {
+      flex-wrap: wrap;
+    }
+    :global(html:not(.js)) .nav {
+      position: static;
+      flex: 1 0 100%;
+      padding: 0 0 0.75rem;
+      border: 0;
+      box-shadow: none;
+      background: none;
+      max-height: none;
+    }
+    :global(html:not(.js)) .nav ul {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+    :global(html:not(.js)) .nav li a {
+      width: auto;
+      min-height: 2.75rem;
+      font-size: 0.98rem;
+    }
+    :global(html:not(.js)) .nav-cv {
+      width: auto;
+      align-self: flex-start;
     }
   }
 

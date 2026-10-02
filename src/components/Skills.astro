@@ -8,21 +8,21 @@ import { skills } from '../data/portfolio';
     <SectionHeading
       id="skills-title"
       eyebrow="Skills"
-      title="The tools I work with"
-      lead="Grouped by the kind of work they support. Everything listed comes from my CV or is demonstrated in a public project."
+      title="Tools from my studies and projects"
+      lead="Grouped by the kind of work they support. Each card says where the skills come from."
     />
 
     <ul class="grid">
       {
         skills.map((group, index) => (
-          <li class="card card--lift group reveal" style={`--i: ${index % 3}`}>
+          <li class="card group reveal" style={`--i: ${index % 3}`}>
             <h3>{group.title}</h3>
             <ul class="chip-list">
               {group.items.map((item) => (
                 <li class="chip">{item}</li>
               ))}
             </ul>
-            {group.evidence && <p class="evidence">Evidence: {group.evidence}</p>}
+            {group.evidence && <p class="evidence">Source: {group.evidence}</p>}
           </li>
         ))
       }
@@ -33,6 +33,7 @@ import { skills } from '../data/portfolio';
 <style>
   .grid {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.1rem;
   }
   .group {
@@ -46,7 +47,7 @@ import { skills } from '../data/portfolio';
     padding-top: 0.25rem;
     color: var(--ink-3);
     font-family: var(--font-mono);
-    font-size: 0.74rem;
+    font-size: 0.75rem;
     letter-spacing: 0.03em;
   }
 

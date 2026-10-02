@@ -3,7 +3,8 @@
  * Schematic of the thesis system's components, taken from the CV description:
  * a Python/Flask ML inference micro-service, a Java/Spring Boot dialogue
  * backend and an HTML/JS front-end, all using REST APIs. It is a diagram, not a
- * screenshot, and deliberately does not draw specific call directions.
+ * screenshot, and deliberately does not show call directions or which model
+ * runs where.
  */
 interface Props {
   compact?: boolean;
@@ -12,25 +13,24 @@ const { compact = false } = Astro.props;
 ---
 
 <figure class:list={['diagram', { compact }]}>
-  <div class="parts">
-    <div class="part">
-      <span class="lang">HTML / JavaScript</span>
-      <strong>Front-end</strong>
+  <div class="parts" aria-hidden="true">
+    <div class="part part--ml">
+      <span class="lang">Python · Flask</span>
+      <strong>ML inference micro-service</strong>
     </div>
     <div class="part">
       <span class="lang">Java · Spring Boot</span>
       <strong>Dialogue backend</strong>
     </div>
-    <div class="part part--ml">
-      <span class="lang">Python · Flask</span>
-      <strong>ML inference service</strong>
-      <span class="models"><i>DistilBERT</i><i>Sentence-BERT</i></span>
+    <div class="part">
+      <span class="lang">HTML / JavaScript</span>
+      <strong>Front-end</strong>
     </div>
   </div>
-  <div class="rest"><span>REST APIs</span></div>
+  <div class="rest" aria-hidden="true"><span>REST APIs</span></div>
   <figcaption class="visually-hidden">
-    Components of the thesis system: an HTML/JavaScript front-end, a Java Spring Boot dialogue
-    backend and a Python Flask machine-learning inference service, using REST APIs.
+    Components of the thesis system: a Python Flask machine-learning inference micro-service, a
+    Java Spring Boot dialogue backend and an HTML/JavaScript front-end, using REST APIs.
   </figcaption>
 </figure>
 
@@ -47,6 +47,7 @@ const { compact = false } = Astro.props;
   }
   .parts {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.7rem;
   }
   .part {
@@ -65,28 +66,13 @@ const { compact = false } = Astro.props;
   .lang {
     color: var(--ink-3);
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
   .part--ml {
-    border-color: rgb(14 107 120 / 0.5);
+    border-color: rgb(var(--accent-rgb) / 0.5);
     background: linear-gradient(160deg, #fff, var(--accent-soft));
-  }
-  .models {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    margin-top: 0.3rem;
-  }
-  .models i {
-    padding: 0.15rem 0.55rem;
-    border-radius: 999px;
-    background: var(--accent);
-    color: #fff;
-    font-size: 0.74rem;
-    font-style: normal;
-    font-weight: 600;
   }
   .rest {
     display: grid;
@@ -96,7 +82,7 @@ const { compact = false } = Astro.props;
     border-radius: 999px;
     color: var(--accent-ink);
     font-family: var(--font-mono);
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -107,7 +93,7 @@ const { compact = false } = Astro.props;
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
     .compact .parts {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

@@ -26,17 +26,27 @@ interface Props {
 }
 const { project, previous, next } = Astro.props;
 
-const hasThesisDiagram = project.slug === 'customer-service-ai-thesis';
+const showDiagram = project.slug === 'customer-service-ai-thesis';
+const figures = project.figures ?? [];
+// The first two figures are shown in full; any others sit in an expandable list.
+const mainFigures = figures.slice(0, 2);
+const moreFigures = figures.slice(2);
+const repoLinks = project.links.filter((link) => link.kind === 'repo').map((link) => link.href);
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://mehmoodanas.github.io');
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'CreativeWork',
   name: project.title,
   description: project.summary,
+  url: canonical.toString(),
   author: { '@type': 'Person', name: site.name },
   keywords: project.tech.join(', '),
-  ...(project.links[0] ? { url: project.links[0].href } : {}),
+  ...(repoLinks.length ? { sameAs: repoLinks } : {}),
 };
+
+// Figure markup shared by the main and the expandable lists.
+const figureSizes = '(min-width: 64rem) 540px, calc(100vw - 2.5rem)';
 ---
 
 <BaseLayout
@@ -62,153 +72,194 @@ const jsonLd = {
         {
           project.links.length > 0 && (
             <div class="actions">
-              <ProjectLinks links={project.links} />
+              <ProjectLinks links={project.links} title={project.title} />
             </div>
           )
         }
       </header>
 
-      <div class="layout">
-        <div class="content">
-          <section aria-labelledby="purpose-title" class="block">
-            <h2 id="purpose-title">Purpose</h2>
-            <p>{project.purpose}</p>
-          </section>
-
-          <section aria-labelledby="contribution-title" class="block">
-            <h2 id="contribution-title">My contribution</h2>
-            <p>{project.contribution}</p>
-          </section>
-
-          <section aria-labelledby="features-title" class="block">
-            <h2 id="features-title">Key features</h2>
-            <ul class="features">
-              {project.features.map((feature) => <li>{feature}</li>)}
-            </ul>
-          </section>
-
+      <section class="glance card" aria-labelledby="glance-title">
+        <h2 id="glance-title" class="visually-hidden">At a glance</h2>
+        <dl>
+          <div>
+            <dt>Type</dt>
+            <dd>{project.kind}</dd>
+          </div>
           {
-            hasThesisDiagram && (
-              <section aria-labelledby="architecture-title" class="block">
-                <h2 id="architecture-title">System components</h2>
-                <div class="diagram-card">
-                  <ThesisDiagram />
-                </div>
-                <p class="caption">
-                  A schematic of the three components described in my CV. It is a diagram, not a
-                  screenshot.
-                </p>
-              </section>
+            project.period && (
+              <div>
+                <dt>Period</dt>
+                <dd>{project.period}</dd>
+              </div>
             )
           }
+          <div class="tech">
+            <dt>Technologies</dt>
+            <dd>
+              <ul class="chip-list">
+                {project.tech.map((tech) => <li class="chip">{tech}</li>)}
+              </ul>
+            </dd>
+          </div>
+        </dl>
+      </section>
 
-          {
-            project.results && project.results.length > 0 && (
-              <section aria-labelledby="results-title" class="block">
-                <h2 id="results-title">Documented results</h2>
-                <p class="muted">
-                  Taken from the project’s own findings report. They describe the dataset studied,
-                  not the marketplace today.
-                </p>
-                <ul class="results">
-                  {project.results.map((result) => (
-                    <li class="card result">
-                      <p class="value">{result.value}</p>
-                      <p class="result-label">{result.label}</p>
-                      {result.note && <p class="note">{result.note}</p>}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )
-          }
-
-          {
-            project.figures && project.figures.length > 0 && (
-              <section aria-labelledby="figures-title" class="block">
-                <h2 id="figures-title">
-                  {project.slug === 'api-test-automation' ? 'Screenshots and diagrams' : 'Charts from the analysis'}
-                </h2>
-                <div class="figures">
-                  {project.figures.map((figure) => (
-                    <figure class="figure">
-                      <a
-                        href={figure.src.src}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="figure-link"
-                      >
-                        <Image
-                          src={figure.src}
-                          alt={figure.alt}
-                          widths={[480, 800, 1200]}
-                          sizes="(min-width: 64rem) 740px, calc(100vw - 2.5rem)"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                        <span class="visually-hidden">(open full size in a new tab)</span>
-                      </a>
-                      <figcaption>{figure.caption}</figcaption>
-                    </figure>
-                  ))}
-                </div>
-              </section>
-            )
-          }
-
-          {
-            project.limitations && project.limitations.length > 0 && (
-              <section aria-labelledby="limitations-title" class="block">
-                <h2 id="limitations-title">Limitations</h2>
-                <ul class="features">
-                  {project.limitations.map((item) => <li>{item}</li>)}
-                </ul>
-              </section>
-            )
-          }
-        </div>
-
-        <aside class="side card" aria-labelledby="glance-title">
-          <h2 id="glance-title">At a glance</h2>
-          <dl>
-            <div>
-              <dt>Type</dt>
-              <dd>{project.kind}</dd>
+      <div class="content">
+        {
+          (project.purpose || project.contribution) && (
+            <div class="duo">
+              {project.purpose && (
+                <section aria-labelledby="purpose-title" class="block">
+                  <h2 id="purpose-title">Purpose</h2>
+                  <p>{project.purpose}</p>
+                </section>
+              )}
+              {project.contribution && (
+                <section aria-labelledby="contribution-title" class="block">
+                  <h2 id="contribution-title">My contribution</h2>
+                  <p>{project.contribution}</p>
+                </section>
+              )}
             </div>
-            {
-              project.period && (
-                <div>
-                  <dt>Period</dt>
-                  <dd>{project.period}</dd>
-                </div>
-              )
-            }
-            <div>
-              <dt>Technologies</dt>
-              <dd>
-                <ul class="chip-list">
-                  {project.tech.map((tech) => <li class="chip">{tech}</li>)}
-                </ul>
-              </dd>
-            </div>
-          </dl>
-        </aside>
+          )
+        }
+
+        <section aria-labelledby="features-title" class="block prose">
+          <h2 id="features-title">Key features</h2>
+          <ul class="features">
+            {project.features.map((feature) => <li>{feature}</li>)}
+          </ul>
+        </section>
+
+        {
+          showDiagram && (
+            <section aria-labelledby="architecture-title" class="block">
+              <h2 id="architecture-title">System components</h2>
+              <div class="diagram-card">
+                <ThesisDiagram />
+              </div>
+              <p class="caption">
+                A schematic of the components named in my CV: a Python / Flask ML inference
+                micro-service, a Java / Spring Boot dialogue backend and an HTML / JavaScript
+                front-end, using REST APIs. It does not show how requests flow between them. It is a
+                diagram, not a screenshot.
+              </p>
+            </section>
+          )
+        }
+
+        {
+          project.results && project.results.length > 0 && (
+            <section aria-labelledby="results-title" class="block">
+              <h2 id="results-title">Documented results</h2>
+              <p class="muted prose">
+                {project.resultsNote ?? 'Results stated in the project’s own documentation.'}
+              </p>
+              <ul class="results">
+                {project.results.map((result) => (
+                  <li class="card result">
+                    <p class="value">{result.value}</p>
+                    <p class="result-label">{result.label}</p>
+                    {result.note && <p class="note">{result.note}</p>}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+
+        {
+          figures.length > 0 && (
+            <section aria-labelledby="figures-title" class="block">
+              <h2 id="figures-title">{project.figuresTitle ?? 'Figures'}</h2>
+              <div class:list={['figures', { single: mainFigures.length === 1 }]}>
+                {mainFigures.map((figure) => (
+                  <figure class="figure">
+                    <a
+                      href={figure.src.src}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="figure-link"
+                      data-cue="Open full size"
+                    >
+                      <Image
+                        src={figure.src}
+                        alt={figure.alt}
+                        widths={[480, 800, 1200, 1600]}
+                        sizes={mainFigures.length === 1 ? '(min-width: 64rem) 1100px, calc(100vw - 2.5rem)' : figureSizes}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <span class="visually-hidden">(open full size in a new tab)</span>
+                    </a>
+                    <figcaption>{figure.caption}</figcaption>
+                  </figure>
+                ))}
+              </div>
+
+              {moreFigures.length > 0 && (
+                <details class="more-figures">
+                  <summary>More charts ({moreFigures.length})</summary>
+                  <div class="figures">
+                    {moreFigures.map((figure) => (
+                      <figure class="figure">
+                        <a
+                          href={figure.src.src}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="figure-link"
+                          data-cue="Open full size"
+                        >
+                          <Image
+                            src={figure.src}
+                            alt={figure.alt}
+                            widths={[480, 800, 1200, 1600]}
+                            sizes={figureSizes}
+                            loading="lazy"
+                            decoding="async"
+                          />
+                          <span class="visually-hidden">(open full size in a new tab)</span>
+                        </a>
+                        <figcaption>{figure.caption}</figcaption>
+                      </figure>
+                    ))}
+                  </div>
+                </details>
+              )}
+            </section>
+          )
+        }
+
+        {
+          project.limitations && project.limitations.length > 0 && (
+            <section aria-labelledby="limitations-title" class="block prose">
+              <h2 id="limitations-title">Limitations</h2>
+              <ul class="features">
+                {project.limitations.map((item) => <li>{item}</li>)}
+              </ul>
+            </section>
+          )
+        }
       </div>
 
-      <nav class="pager" aria-label="More projects">
-        <a class="card card--lift pager-link" href={url(`/projects/${previous.slug}`)} rel="prev">
-          <span class="pager-label"><Icon name="arrow-left" size={16} /> Previous project</span>
-          <span class="pager-title">{previous.title}</span>
-        </a>
-        <a
-          class="card card--lift pager-link pager-next"
-          href={url(`/projects/${next.slug}`)}
-          rel="next"
-        >
-          <span class="pager-label">Next project <Icon name="arrow-right" size={16} /></span>
-          <span class="pager-title">{next.title}</span>
-        </a>
-      </nav>
+      {
+        featuredProjects.length > 1 && (
+          <nav class="pager" aria-label="More projects">
+            <a class="card card--lift pager-link" href={url(`/projects/${previous.slug}`)} rel="prev">
+              <span class="pager-label"><Icon name="arrow-left" size={16} /> Previous project</span>
+              <span class="pager-title">{previous.title}</span>
+            </a>
+            <a
+              class="card card--lift pager-link pager-next"
+              href={url(`/projects/${next.slug}`)}
+              rel="next"
+            >
+              <span class="pager-label">Next project <Icon name="arrow-right" size={16} /></span>
+              <span class="pager-title">{next.title}</span>
+            </a>
+          </nav>
+        )
+      }
     </div>
   </article>
 </BaseLayout>
@@ -235,7 +286,7 @@ const jsonLd = {
     gap: 1.1rem;
     justify-items: start;
     max-width: 50rem;
-    margin-block: clamp(1rem, 3vw, 2rem) clamp(2.5rem, 6vw, 4rem);
+    margin-block: clamp(1rem, 3vw, 2rem) clamp(1.75rem, 4vw, 2.5rem);
   }
   .head h1 {
     font-size: clamp(2rem, 3.6vw + 1rem, 3.4rem);
@@ -264,25 +315,55 @@ const jsonLd = {
     margin-top: 0.5rem;
   }
 
-  .layout {
-    display: grid;
-    gap: clamp(2rem, 5vw, 3.5rem);
-    align-items: start;
+  /* At-a-glance strip */
+  .glance {
+    padding: 1.25rem 1.5rem;
+    box-shadow: var(--shadow-md);
   }
+  .glance dl {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem 2.5rem;
+    margin: 0;
+  }
+  .glance dt {
+    margin-bottom: 0.35rem;
+    color: var(--accent-ink);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .glance dd {
+    margin: 0;
+    font-weight: 550;
+  }
+
   .content {
     display: grid;
-    gap: clamp(2rem, 5vw, 3rem);
-    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 3.25rem);
+    margin-top: clamp(2.25rem, 5vw, 3.5rem);
+  }
+  .duo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(1.75rem, 4vw, 3rem);
   }
   .block {
     display: grid;
+    align-content: start;
     gap: 0.9rem;
     color: var(--ink-2);
   }
-  .block h2,
-  .side h2 {
+  .block h2 {
     font-size: 1.45rem;
     color: var(--ink);
+  }
+  /* Keep running text to a comfortable line length. */
+  .block > p,
+  .prose {
+    max-width: 44rem;
   }
 
   .features {
@@ -297,6 +378,7 @@ const jsonLd = {
 
   .diagram-card {
     overflow: hidden;
+    max-width: 52rem;
     border: 1px solid var(--line-strong);
     border-radius: var(--radius);
     box-shadow: var(--shadow-md);
@@ -308,11 +390,13 @@ const jsonLd = {
 
   .results {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 1rem;
     margin-top: 0.5rem;
   }
   .result {
     display: grid;
+    align-content: start;
     gap: 0.35rem;
     padding: 1.25rem 1.4rem;
   }
@@ -334,14 +418,17 @@ const jsonLd = {
 
   .figures {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.5rem;
   }
   .figure {
     margin: 0;
     display: grid;
+    align-content: start;
     gap: 0.6rem;
   }
   .figure-link {
+    position: relative;
     display: block;
     overflow: hidden;
     border: 1px solid var(--line-strong);
@@ -351,6 +438,31 @@ const jsonLd = {
     transition:
       transform 0.25s var(--ease),
       box-shadow 0.25s var(--ease);
+  }
+  /* Visible "open full size" cue: on hover/focus with a mouse, always on touch screens. */
+  .figure-link::after {
+    content: attr(data-cue);
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: var(--radius-pill);
+    background: rgb(21 23 28 / 0.82);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.2s var(--ease);
+    pointer-events: none;
+  }
+  .figure-link:hover::after,
+  .figure-link:focus-visible::after {
+    opacity: 1;
+  }
+  @media (hover: none) {
+    .figure-link::after {
+      opacity: 1;
+    }
   }
   @media (hover: hover) {
     .figure-link:hover {
@@ -367,32 +479,26 @@ const jsonLd = {
     font-size: 0.92rem;
   }
 
-  .side {
-    display: grid;
-    gap: 1.25rem;
-    padding: 1.5rem;
-    box-shadow: var(--shadow-md);
+  .more-figures {
+    margin-top: 1.25rem;
+    border-top: 1px solid var(--line);
+    padding-top: 0.75rem;
   }
-  .side dl {
-    display: grid;
-    gap: 1.1rem;
-    margin: 0;
-  }
-  .side dt {
-    margin-bottom: 0.35rem;
+  .more-figures summary {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
     color: var(--accent-ink);
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
   }
-  .side dd {
-    margin: 0;
-    font-weight: 550;
+  .more-figures .figures {
+    margin-top: 1rem;
   }
 
   .pager {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 1rem;
     margin-top: clamp(3rem, 7vw, 5rem);
   }
@@ -412,7 +518,7 @@ const jsonLd = {
     gap: 0.4rem;
     color: var(--accent-ink);
     font-family: var(--font-mono);
-    font-size: 0.74rem;
+    font-size: 0.75rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
@@ -423,14 +529,25 @@ const jsonLd = {
     line-height: 1.3;
   }
 
+  @media (min-width: 40rem) {
+    .results {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 48rem) {
+    .glance dl {
+      grid-template-columns: auto auto minmax(0, 1fr);
+    }
+    .duo {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 64rem) {
+    .figures:not(.single) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
   @media (min-width: 56rem) {
-    .layout {
-      grid-template-columns: minmax(0, 1fr) 19rem;
-    }
-    .side {
-      position: sticky;
-      top: calc(var(--header-h) + 1.5rem);
-    }
     .pager {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }

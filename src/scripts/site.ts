@@ -22,7 +22,6 @@ function initHeader(): void {
   const setOpen = (open: boolean, returnFocus = false) => {
     header.toggleAttribute('data-open', open);
     button.setAttribute('aria-expanded', String(open));
-    button.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     if (!open && returnFocus) button.focus();
   };
 
@@ -52,11 +51,10 @@ function initScrollSpy(): void {
   const links = Array.from(
     document.querySelectorAll<HTMLAnchorElement>('[data-nav] a[data-section]'),
   );
-  if (!links.length || !('IntersectionObserver' in window)) return;
+  if (!links.length) return;
 
-  const byId = new Map(links.map((link) => [link.dataset.section!, link]));
-  const sections = Array.from(byId.keys())
-    .map((id) => document.getElementById(id))
+  const sections = links
+    .map((link) => document.getElementById(link.dataset.section!))
     .filter((el): el is HTMLElement => el !== null);
   if (!sections.length) return;
 
@@ -67,26 +65,27 @@ function initScrollSpy(): void {
     });
   };
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      const visible = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (visible) setActive(visible.target.id);
-    },
-    { rootMargin: '-35% 0px -55% 0px', threshold: [0, 0.1, 0.5, 1] },
-  );
-  sections.forEach((section) => observer.observe(section));
+  // The current section is the last one whose top edge has passed a line 45% down the viewport.
+  // Computed from geometry on scroll (throttled with rAF) so it is correct after clicks,
+  // deep links and fast scrolling.
+  let frame = 0;
+  const update = () => {
+    frame = 0;
+    const line = window.innerHeight * 0.45;
+    let current: HTMLElement | null = null;
+    for (const section of sections) {
+      if (section.getBoundingClientRect().top <= line) current = section;
+    }
+    setActive(current ? current.id : null);
+  };
+  const schedule = () => {
+    if (!frame) frame = requestAnimationFrame(update);
+  };
 
-  const hero = document.querySelector<HTMLElement>('[data-hero]');
-  if (hero) {
-    new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && entry.intersectionRatio > 0.6) setActive(null);
-      },
-      { threshold: [0.6] },
-    ).observe(hero);
-  }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule);
+  window.addEventListener('load', schedule);
+  update();
 }
 
 /* ───────────────────────────────── Scroll reveal ──────────────────────────── */
@@ -124,14 +123,14 @@ function initCopy(): void {
 
     const announce = (message: string, ok: boolean) => {
       if (status) status.textContent = message;
-      if (label) label.textContent = ok ? 'Copied' : original;
+      if (label) label.textContent = ok ? 'Copied' : 'Couldn’t copy. Select the address';
       button.toggleAttribute('data-copied', ok);
       window.clearTimeout(timer);
       timer = window.setTimeout(() => {
         if (label) label.textContent = original;
         button.removeAttribute('data-copied');
         if (status) status.textContent = '';
-      }, 2600);
+      }, ok ? 2600 : 5000);
     };
 
     button.addEventListener('click', async () => {
@@ -178,7 +177,21 @@ function initTilt(): void {
   });
 }
 
+/* Smooth scrolling is switched on only after the page has loaded and web fonts have settled;
+   otherwise a link such as /#projects animates towards a position that then moves. */
+function enableSmoothScroll(): void {
+  if (prefersReducedMotion.matches) return;
+  const on = () => document.documentElement.classList.add('smooth-scroll');
+  const ready = () => {
+    const fonts = document.fonts?.ready ?? Promise.resolve();
+    fonts.then(() => window.setTimeout(on, 100));
+  };
+  if (document.readyState === 'complete') ready();
+  else window.addEventListener('load', ready, { once: true });
+}
+
 initHeader();
+enableSmoothScroll();
 initScrollSpy();
 initReveal();
 initCopy();

@@ -12,7 +12,7 @@ import { featuredProjects, otherProjects, site } from '../data/portfolio';
       id="projects-title"
       eyebrow="Projects"
       title="Selected work"
-      lead="Three projects in depth, each with a case study, followed by coursework and learning projects."
+      lead="Featured projects with case studies, followed by coursework and learning projects."
     />
 
     <div class="featured">
@@ -46,6 +46,7 @@ import { featuredProjects, otherProjects, site } from '../data/portfolio';
 <style>
   .featured {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: clamp(1.5rem, 4vw, 2.5rem);
   }
   .more-block {
@@ -57,13 +58,14 @@ import { featuredProjects, otherProjects, site } from '../data/portfolio';
   }
   .grid {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.1rem;
   }
   .all {
     margin-top: clamp(2rem, 5vw, 3rem);
   }
 
-  @media (min-width: 40rem) {
+  @media (min-width: 48rem) {
     .grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }

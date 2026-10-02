@@ -1,7 +1,7 @@
 ---
 import SectionHeading from './SectionHeading.astro';
 import Icon from './Icon.astro';
-import { certifications, education, languages, projects } from '../data/portfolio';
+import { certifications, education, projects } from '../data/portfolio';
 import { url } from '../utils/url';
 
 const thesisOf = (slug?: string) => projects.find((p) => p.slug === slug);
@@ -16,44 +16,44 @@ const thesisOf = (slug?: string) => projects.find((p) => p.slug === slug);
     />
 
     <div class="grid">
-      <div class="col">
-        {
-          education.map((entry) => {
-            const thesis = thesisOf(entry.thesisSlug);
-            return (
-              <article class="card degree reveal" aria-labelledby="degree-title">
-                <p class="period">{entry.period}</p>
-                <h3 id="degree-title">{entry.degree}</h3>
-                <p class="school">
-                  {entry.institution} <span>· {entry.location}</span>
+      {
+        education.map((entry, index) => {
+          const thesis = thesisOf(entry.thesisSlug);
+          return (
+            <article
+              class="card degree reveal"
+              aria-labelledby={`degree-title-${index}`}
+            >
+              <p class="period">{entry.period}</p>
+              <h3 id={`degree-title-${index}`}>{entry.degree}</h3>
+              <p class="school">
+                {entry.institution} <span>· {entry.location}</span>
+              </p>
+
+              <h4 class="sub">Relevant coursework</h4>
+              <ul class="chip-list">
+                {entry.coursework.map((course) => (
+                  <li class="chip">{course}</li>
+                ))}
+              </ul>
+
+              {thesis && (
+                <p class="thesis">
+                  <strong>Thesis:</strong>{' '}
+                  <a href={url(`/projects/${thesis.slug}`)}>{thesis.title}</a>
                 </p>
+              )}
+            </article>
+          );
+        })
+      }
 
-                <h4 class="sub">Relevant coursework</h4>
-                <ul class="chip-list">
-                  {entry.coursework.map((course) => (
-                    <li class="chip">{course}</li>
-                  ))}
-                </ul>
-
-                {thesis && (
-                  <p class="thesis">
-                    <strong>Thesis:</strong>{' '}
-                    <a href={url(`/projects/${thesis.slug}`)}>{thesis.title}</a>
-                  </p>
-                )}
-              </article>
-            );
-          })
-        }
-      </div>
-
-      <div class="col">
-        {certifications.length > 0 && (
-        <section class="card panel reveal" style="--i: 1" aria-labelledby="certs-title">
-          <h3 id="certs-title">Certifications</h3>
-          <ul class="certs">
-            {
-              certifications.map((cert) => (
+      {
+        certifications.length > 0 && (
+          <section class="card panel reveal" style="--i: 1" aria-labelledby="certs-title">
+            <h3 id="certs-title">Certifications</h3>
+            <ul class="certs">
+              {certifications.map((cert) => (
                 <li>
                   <span class="badge">
                     <Icon name="award" size={18} />
@@ -74,28 +74,11 @@ const thesisOf = (slug?: string) => projects.find((p) => p.slug === slug);
                     </p>
                   </div>
                 </li>
-              ))
-            }
-          </ul>
-        </section>
-        )}
-
-        {languages.length > 0 && (
-        <section class="card panel reveal" style="--i: 2" aria-labelledby="languages-title">
-          <h3 id="languages-title">Languages</h3>
-          <ul class="langs">
-            {
-              languages.map((language) => (
-                <li>
-                  <span class="lang-name">{language.name}</span>
-                  <span class="lang-level">{language.level}</span>
-                </li>
-              ))
-            }
-          </ul>
-        </section>
-        )}
-      </div>
+              ))}
+            </ul>
+          </section>
+        )
+      }
     </div>
   </div>
 </section>
@@ -103,16 +86,14 @@ const thesisOf = (slug?: string) => projects.find((p) => p.slug === slug);
 <style>
   .grid {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.25rem;
-    align-items: start;
-  }
-  .col {
-    display: grid;
-    gap: 1.25rem;
+    align-items: stretch;
   }
 
   .degree {
     display: grid;
+    align-content: start;
     gap: 0.75rem;
     padding: clamp(1.4rem, 3vw, 2rem);
     box-shadow: var(--shadow-md);
@@ -146,6 +127,7 @@ const thesisOf = (slug?: string) => projects.find((p) => p.slug === slug);
 
   .panel {
     display: grid;
+    align-content: start;
     gap: 1rem;
     padding: clamp(1.25rem, 3vw, 1.75rem);
   }
@@ -155,7 +137,7 @@ const thesisOf = (slug?: string) => projects.find((p) => p.slug === slug);
   }
   .certs li {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto minmax(0, 1fr);
     gap: 0.85rem;
     align-items: start;
   }
@@ -172,27 +154,6 @@ const thesisOf = (slug?: string) => projects.find((p) => p.slug === slug);
     color: var(--ink);
     font-weight: 620;
     line-height: 1.35;
-  }
-
-  .langs {
-    display: grid;
-    gap: 0.1rem;
-  }
-  .langs li {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.55rem 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .langs li:last-child {
-    border-bottom: 0;
-  }
-  .lang-name {
-    font-weight: 600;
-  }
-  .lang-level {
-    color: var(--ink-2);
   }
 
   @media (min-width: 56rem) {

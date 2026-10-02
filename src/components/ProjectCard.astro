@@ -13,6 +13,10 @@ interface Props {
 const { project, index } = Astro.props;
 
 const figure = project.figures?.[0];
+// The thesis has no screenshots, so it shows a component diagram. Other projects show their
+// first real figure, or no media column at all.
+const showDiagram = !figure && project.slug === 'customer-service-ai-thesis';
+const hasMedia = Boolean(figure) || showDiagram;
 const visibleTech = project.tech.slice(0, 6);
 const extraTech = project.tech.length - visibleTech.length;
 const flip = index % 2 === 1;
@@ -20,28 +24,30 @@ const caseStudy = url(`/projects/${project.slug}`);
 ---
 
 <article
-  class:list={['card', 'feature', 'reveal', { flip }]}
+  class:list={['card', 'feature', 'reveal', { flip, 'no-media': !hasMedia }]}
   aria-labelledby={`${project.slug}-title`}
 >
-  <div class="media">
-    <div class="frame">
-      {
-        figure ? (
-          <Image
-            src={figure.src}
-            alt={figure.alt}
-            widths={[480, 720, 1000]}
-            sizes="(min-width: 56rem) 520px, calc(100vw - 4rem)"
-            loading="lazy"
-            decoding="async"
-            class="shot"
-          />
-        ) : (
-          <ThesisDiagram compact />
-        )
-      }
-    </div>
-  </div>
+  {
+    hasMedia && (
+      <div class="media">
+        <a class="frame" href={caseStudy} tabindex="-1" aria-hidden="true">
+          {figure ? (
+            <Image
+              src={figure.src}
+              alt={figure.alt}
+              widths={[480, 720, 1000]}
+              sizes="(min-width: 56rem) min(531px, calc(50vw - 4.5rem)), calc(100vw - 4rem)"
+              loading="lazy"
+              decoding="async"
+              class="shot"
+            />
+          ) : (
+            <ThesisDiagram compact />
+          )}
+        </a>
+      </div>
+    )
+  }
 
   <div class="body">
     <p class="meta">
@@ -62,7 +68,7 @@ const caseStudy = url(`/projects/${project.slug}`);
         <Icon name="arrow-right" size={16} />
         <span class="visually-hidden"> for {project.title}</span>
       </a>
-      <ProjectLinks links={project.links} small />
+      <ProjectLinks links={project.links} title={project.title} variant="link" small />
     </div>
   </div>
 </article>
@@ -70,6 +76,7 @@ const caseStudy = url(`/projects/${project.slug}`);
 <style>
   .feature {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     overflow: hidden;
     box-shadow: var(--shadow-md);
   }
@@ -91,6 +98,13 @@ const caseStudy = url(`/projects/${project.slug}`);
   .frame {
     position: relative;
     isolation: isolate;
+    display: block;
+    border-radius: var(--radius-sm);
+    color: inherit;
+    text-decoration: none;
+  }
+  .frame:hover {
+    color: inherit;
   }
   .frame::before {
     content: '';
@@ -140,12 +154,13 @@ const caseStudy = url(`/projects/${project.slug}`);
   .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.6rem;
+    align-items: center;
+    gap: 0.25rem 1.5rem;
     margin-top: 0.4rem;
   }
 
   @media (min-width: 56rem) {
-    .feature {
+    .feature:not(.no-media) {
       grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
     }
     .flip .media {
