@@ -52,7 +52,9 @@ are kept in `_reference-material/` for reference.
    appears under Backend & web only because the CV's thesis line names an HTML/JS front-end. Hugging
    Face is listed for the thesis in your GitHub README but not in the CV, so it is left off the
    thesis technologies too. If you want any of these shown, add them in `src/data/portfolio.ts`.
-6. **Languages.** The old site lists Latvian (Basic); the CV does not. Latvian is left out.
+6. **Languages.** Latvian (Basic) appears in the later CV version (saved 22 Sep 2026) and on the old
+   site, so it is shown. The CV file the site offers for download (`public/cv/`) is the earlier
+   version without it.
 7. **Selenium UI Test Suite "in progress".** Mentioned on your GitHub README and the old site, but
    there is no public repository, so it is not shown.
 8. **`sap-o2c-walkthrough` repository.** It contains only a short README and a notes stub. It is

@@ -490,15 +490,13 @@ export const certifications: Certification[] = [
   },
 ];
 
-/**
- * CONFIRM: the old portfolio site also listed Latvian (Basic). It is not in
- * your CV, so it is not shown here.
- */
+/** Languages as listed in your CV (Latvian appears in the later CV version of 22 Sep 2026). */
 export const languages: LanguageItem[] = [
   { name: 'Urdu', level: 'Native' },
   { name: 'English', level: 'B2 (IELTS)' },
   { name: 'Punjabi', level: 'Fluent' },
   { name: 'Russian', level: 'Elementary' },
+  { name: 'Latvian', level: 'Basic' },
 ];
 
 /* ─────────────────────────────────── Contact ──────────────────────────────── */
