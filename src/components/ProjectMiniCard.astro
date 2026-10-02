@@ -21,9 +21,15 @@ const { project, index } = Astro.props;
   <h3 id={`${project.slug}-title`}>{project.title}</h3>
   <p class="muted">{project.summary}</p>
 
-  <ul class="chip-list" aria-label="Technologies">
-    {project.tech.map((tech) => <li class="chip">{tech}</li>)}
-  </ul>
+  {
+    project.tech.length > 0 && (
+      <ul class="chip-list" aria-label="Technologies">
+        {project.tech.map((tech) => (
+          <li class="chip">{tech}</li>
+        ))}
+      </ul>
+    )
+  }
 
   <details class="more">
     <summary>What it covered</summary>
@@ -35,7 +41,7 @@ const { project, index } = Astro.props;
   {
     project.links.length > 0 && (
       <div class="actions">
-        <ProjectLinks links={project.links} small />
+        <ProjectLinks links={project.links} title={project.title} variant="link" small />
       </div>
     )
   }
@@ -52,7 +58,7 @@ const { project, index } = Astro.props;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.35rem 0.6rem;
   }
   .period {
     color: var(--ink-3);
@@ -69,7 +75,7 @@ const { project, index } = Astro.props;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 2.5rem;
+    min-height: 2.75rem;
     color: var(--accent-ink);
     font-size: 0.95rem;
     font-weight: 600;
@@ -81,6 +87,7 @@ const { project, index } = Astro.props;
   }
   .more summary::after {
     content: '+';
+    content: '+' / '';
     display: grid;
     place-items: center;
     width: 1.6rem;
@@ -93,6 +100,7 @@ const { project, index } = Astro.props;
   }
   .more[open] summary::after {
     content: '–';
+    content: '–' / '';
   }
   .more ul {
     display: grid;
@@ -110,6 +118,7 @@ const { project, index } = Astro.props;
   .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.6rem;
+    align-items: center;
+    gap: 0.25rem 1.5rem;
   }
 </style>

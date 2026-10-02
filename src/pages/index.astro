@@ -12,12 +12,12 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
   name: site.name,
-  jobTitle: site.shortTitle,
   description: site.description,
   url: Astro.site?.toString(),
   alumniOf: { '@type': 'CollegeOrUniversity', name: 'Riga Technical University' },
   address: { '@type': 'PostalAddress', addressLocality: 'Riga', addressCountry: 'LV' },
-  sameAs: [site.github, site.linkedin],
+  // LinkedIn is deliberately not listed here until its address has been confirmed.
+  sameAs: [site.github],
 };
 ---
 

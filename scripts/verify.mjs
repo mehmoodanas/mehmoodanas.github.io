@@ -55,18 +55,24 @@ for (const required of [
   'og-image.png',
   'robots.txt',
   'sitemap-index.xml',
-  'cv/Anas-Mehmood-CV.docx',
 ]) {
   if (!(await exists(path.join(dist, required)))) fail(`Missing build output: ${required}`);
 }
 
-/* ── 2. CV is a real Word document ── */
-const cvPath = path.join(dist, 'cv', 'Anas-Mehmood-CV.docx');
-if (await exists(cvPath)) {
-  const cv = await readFile(cvPath);
-  const isZip = cv.subarray(0, 2).toString('latin1') === 'PK';
-  if (!isZip || !cv.includes(Buffer.from('word/document.xml'))) {
-    fail('cv/Anas-Mehmood-CV.docx is not a valid .docx file');
+/* ── 2. Every download link points at a real file (the CV: .docx or .pdf) ── */
+async function checkDownload(href, fromPage) {
+  let p = href.split('#')[0].split('?')[0];
+  if (base && p.startsWith(base)) p = p.slice(base.length);
+  const file = path.join(dist, decodeURIComponent(p));
+  if (!(await exists(file))) return fail(`[${fromPage}] download link to a missing file: ${href}`);
+  const bytes = await readFile(file);
+  if (bytes.length === 0) return fail(`[${fromPage}] download file is empty: ${href}`);
+  const lower = p.toLowerCase();
+  if (lower.endsWith('.docx')) {
+    const isZip = bytes.subarray(0, 2).toString('latin1') === 'PK';
+    if (!isZip || !bytes.includes(Buffer.from('word/document.xml'))) fail(`${href} is not a valid .docx file`);
+  } else if (lower.endsWith('.pdf')) {
+    if (bytes.subarray(0, 5).toString('latin1') !== '%PDF-') fail(`${href} is not a valid .pdf file`);
   }
 }
 
@@ -80,12 +86,21 @@ for (const file of htmlFiles) {
 
 const attr = (tag, name) => tag.match(new RegExp(`\\s${name}="([^"]*)"`))?.[1];
 
+let downloadLinks = 0;
 for (const [name, { html }] of pages) {
   const label = `[${name}]`;
+  const noindex = /<meta name="robots" content="noindex"/.test(html);
+  for (const a of html.matchAll(/<a\b[^>]*\sdownload(?:=|\s|>)[^>]*>/g)) {
+    const href = attr(a[0], 'href');
+    if (href) {
+      downloadLinks++;
+      await checkDownload(href, name);
+    }
+  }
   if (!/<html[^>]*\slang="en"/.test(html)) fail(`${label} missing <html lang>`);
   if (!/<title>[^<]{5,}<\/title>/.test(html)) fail(`${label} missing or short <title>`);
   if (!/<meta name="description" content="[^"]{30,}"/.test(html)) fail(`${label} missing meta description`);
-  if (!/<link rel="canonical" href="https?:\/\//.test(html)) fail(`${label} missing absolute canonical URL`);
+  if (!noindex && !/<link rel="canonical" href="https?:\/\//.test(html)) fail(`${label} missing absolute canonical URL`);
   if (!/<meta property="og:image" content="https?:\/\//.test(html)) fail(`${label} og:image is not absolute`);
   if (!/<meta name="twitter:card"/.test(html)) fail(`${label} missing twitter:card`);
   if (name !== '404.html') {
@@ -213,7 +228,10 @@ if (checkExternal) {
 }
 
 /* ── Report ── */
-console.log(`\nChecked ${htmlFiles.length} pages, ${internalChecked.size} internal links.`);
+if (downloadLinks === 0) fail('No download link (CV) found on any page');
+console.log(
+  `\nChecked ${htmlFiles.length} pages, ${internalChecked.size} internal links, ${downloadLinks} download links.`,
+);
 for (const w of warnings) console.log(`  warning: ${w}`);
 if (failures.length) {
   console.error(`\n${failures.length} problem(s):`);

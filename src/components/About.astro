@@ -8,20 +8,16 @@ const degree = education[0];
 
 <section id="about" class="section" aria-labelledby="about-title">
   <div class="container">
-    <SectionHeading
-      id="about-title"
-      eyebrow="About"
-      title="Building AI systems that are measured, tested and explained"
-    />
+    <SectionHeading id="about-title" eyebrow="About" title={about.title} />
 
     <div class="layout">
       <div class="story reveal">
         {about.paragraphs.map((text) => <p>{text}</p>)}
 
-        <div class="interests">
-          <h3 class="small-title">Interests</h3>
+        <div class="focus">
+          <h3 class="small-title">Focus areas</h3>
           <ul class="chip-list">
-            {about.interests.map((item) => <li class="chip chip--accent">{item}</li>)}
+            {about.focusAreas.map((item) => <li class="chip chip--accent">{item}</li>)}
           </ul>
         </div>
       </div>
@@ -42,7 +38,7 @@ const degree = education[0];
           </div>
           <div>
             <dt><Icon name="file" size={18} /> Languages</dt>
-            <dd>{languages.map((l) => `${l.name} (${l.level})`).join(' · ')}</dd>
+            <dd>{languages.map((l) => `${l.name}: ${l.level}`).join(' · ')}</dd>
           </div>
         </dl>
       </aside>
@@ -64,6 +60,7 @@ const degree = education[0];
 <style>
   .layout {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: clamp(1.75rem, 4vw, 3rem);
     align-items: start;
   }
@@ -85,7 +82,7 @@ const degree = education[0];
     font-size: 0.95rem;
     letter-spacing: 0;
   }
-  .interests {
+  .focus {
     margin-top: 0.5rem;
   }
 
@@ -105,7 +102,7 @@ const degree = education[0];
     margin-bottom: 0.2rem;
     color: var(--accent-ink);
     font-family: var(--font-mono);
-    font-size: 0.74rem;
+    font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -119,13 +116,15 @@ const degree = education[0];
 
   .strengths {
     display: grid;
-    gap: 1.1rem;
-    margin-top: clamp(2.5rem, 6vw, 4rem);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    margin-top: clamp(2rem, 5vw, 3rem);
   }
   .strengths li {
     display: grid;
-    gap: 0.6rem;
-    padding: 1.5rem;
+    align-content: start;
+    gap: 0.55rem;
+    padding: 1.25rem 1.4rem;
   }
   .strengths li::before {
     content: '';

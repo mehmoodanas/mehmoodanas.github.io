@@ -15,24 +15,26 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
-      # Set these as repository variables (Settings → Secrets and variables →
-      # Actions → Variables) when the site is NOT the "<username>.github.io"
-      # user site itself, e.g. SITE_URL=https://<username>.github.io and
-      # BASE_PATH=/<repository-name>. The build and the verify step must agree.
-      SITE_URL: ${{ vars.SITE_URL || 'https://mehmoodanas.github.io' }}
-      BASE_PATH: ${{ vars.BASE_PATH || '/' }}
+      # Worked out automatically from the repository:
+      #   <user>.github.io repository  ->  https://<user>.github.io/
+      #   any other repository "name"  ->  https://<user>.github.io/name/
+      # To override (for example with your own domain), add repository variables
+      # SITE_URL and BASE_PATH under Settings → Secrets and variables → Actions → Variables.
+      # The build and the verify step below must see the same values.
+      SITE_URL: ${{ vars.SITE_URL || format('https://{0}.github.io', github.repository_owner) }}
+      BASE_PATH: ${{ vars.BASE_PATH || (endsWith(github.repository, '.github.io') && '/' || format('/{0}', github.event.repository.name)) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: npm
 
       - run: npm ci
@@ -44,18 +46,18 @@ jobs:
         run: npm run build
 
       - name: Verify build output
-        run: node scripts/verify.mjs
+        run: npm run verify
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

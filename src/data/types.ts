@@ -51,8 +51,10 @@ export interface Project {
   links: LinkItem[];
   /** Real images from the project. Never add mock-ups. */
   figures?: Figure[];
-  /** Optional small label such as "Learning notes". */
-  status?: string;
+  /** Heading above the figures on the case-study page. Default: "Figures". */
+  figuresTitle?: string;
+  /** One sentence shown above the results. Default: "Results stated in the project's own documentation." */
+  resultsNote?: string;
 }
 
 export interface SkillGroup {

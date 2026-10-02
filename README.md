@@ -1,36 +1,38 @@
 # Anas Mehmood — Portfolio
 
-A fast, accessible, static portfolio website built with [Astro](https://astro.build). All
-text lives in **one data file**, and the site builds to plain HTML, CSS and a tiny bit of
-JavaScript that can be hosted for free (GitHub Pages, Netlify, Vercel, Cloudflare Pages).
+**Live site: <https://mehmoodanas.github.io/>**
+
+A fast, accessible, static portfolio website built with [Astro](https://astro.build). All text
+lives in **one data file**, and the site builds to plain HTML, CSS and a tiny bit of JavaScript
+that can be hosted for free (GitHub Pages, Netlify, Vercel, Cloudflare Pages).
 
 - **Design:** neutral warm background, one teal accent, layered cards with soft shadows, and one
   small CSS-only 3D element in the hero. No 3D library, no particles, no custom cursor, no scroll
   hijacking.
-- **Motion:** gentle and optional. With "reduce motion" turned on in the operating system, all
-  animation stops and the hero decoration stays still. Browsers that cannot do 3D transforms show a
-  flat stack of cards instead.
+- **Motion:** gentle and optional. The hero decoration floats for five seconds and then rests. With
+  "reduce motion" turned on in the operating system, all animation stops and the decoration stays
+  still. Browsers that cannot do 3D transforms show a flat stack of cards instead.
 - **Pages:** one home page (Hero, About, Skills, Projects, Education & certifications, Contact),
   one case-study page for each featured project, and a 404 page.
 
 ## Quick start
 
-You need [Node.js](https://nodejs.org) 20 or newer.
+You need [Node.js](https://nodejs.org) **22.12 or newer** (Node 22 LTS or 24; `.nvmrc` says 22).
 
 ```bash
 npm install        # once, to download dependencies
 npm run dev        # live preview at http://localhost:4321 (updates as you edit)
 ```
 
-| Command                        | What it does                                                            |
-| ------------------------------ | ----------------------------------------------------------------------- |
-| `npm run dev`                  | Starts the live-reloading preview                                       |
-| `npm run build`                | Creates the finished site in `dist/`                                    |
-| `npm run preview`              | Serves `dist/` locally, exactly as it will look online                  |
-| `npm run check`                | Type-checks the code and content                                        |
-| `npm run verify`               | After a build: checks pages, links, anchors, alt text, meta tags, CV    |
-| `npm run verify:external`      | Same, and also requests every external link                             |
-| `npm run icons` / `npm run og` | Re-creates the touch icon / the social-sharing image (see "Branding")  |
+| Command                        | What it does                                                                            |
+| ------------------------------ | --------------------------------------------------------------------------------------- |
+| `npm run dev`                  | Starts the live-reloading preview                                                       |
+| `npm run build`                | Creates the finished site in `dist/`                                                    |
+| `npm run preview`              | Serves `dist/` locally, exactly as it will look online                                  |
+| `npm run check`                | Type-checks the code and content                                                        |
+| `npm run verify`               | After a build: checks pages, links, anchors, alt text, meta tags and the CV download    |
+| `npm run verify:external`      | Same, and also requests every external link                                             |
+| `npm run icons` / `npm run og` | Re-creates the touch icon / the social-sharing image (see "Branding")                   |
 
 ## Project structure
 
@@ -51,7 +53,7 @@ public/
 scripts/                 ← verify.mjs, generate-og.mjs, generate-icons.mjs
 docs/                    ← UPDATING.md, CONTENT-NOTES.md
 .github/workflows/deploy.yml  ← automatic deployment to GitHub Pages
-_reference-material/     ← the source files used to write the content (not part of the site)
+_reference-material/     ← the source files used to write the content (git-ignored, not part of the site)
 ```
 
 ## Updating the content
@@ -62,36 +64,58 @@ project, replacing the CV, showing your phone number, changing the colour — is
 
 ## Deploying
 
-### Option A — GitHub Pages at `https://mehmoodanas.github.io` (replaces the current site)
+The repository already contains a workflow (`.github/workflows/deploy.yml`) that type-checks,
+builds, verifies and publishes the site to **GitHub Pages** on every push to `main`. It works out
+the right address and base path from the repository name, so no settings are needed beyond a
+one-time switch: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 
-1. In the `mehmoodanas.github.io` repository, replace all files with the contents of this folder
-   (everything except `node_modules/`, `dist/` and `_reference-material/`, which are git-ignored).
-2. On GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-3. Push to the `main` branch. The workflow in `.github/workflows/deploy.yml` type-checks, builds,
-   verifies and publishes the site. The address appears in the workflow run and under
-   **Settings → Pages**.
+| Repository name               | Site address                                  |
+| ----------------------------- | --------------------------------------------- |
+| `mehmoodanas.github.io`       | `https://mehmoodanas.github.io/`              |
+| anything else, e.g. `portfolio` | `https://mehmoodanas.github.io/portfolio/`  |
+
+The live site is published at the root from the `mehmoodanas.github.io` repository. The
+`portfolio` repository holds a second copy of the same project that publishes to `/portfolio/`;
+it can be kept as a backup or deleted.
+
+### The old site
+
+The previous portfolio (plain HTML) was replaced on 2 October 2026. Nothing was lost: it is kept
+under the tag `old-site` in the `mehmoodanas.github.io` repository and is part of that
+repository's history. To look at it: `git checkout old-site`. To put it back, create a branch from
+that tag, copy its files over the new ones and set **Settings → Pages → Source** back to "Deploy
+from a branch" (`main`, `/ (root)`).
+
+### Publishing the same project to a second repository
 
 ```bash
-git init -b main
-git remote add origin https://github.com/mehmoodanas/mehmoodanas.github.io.git
-git add .
-git commit -m "New portfolio"
-git push --force origin main   # replaces the old site; the old version stays in git history
+git remote add site https://github.com/mehmoodanas/mehmoodanas.github.io.git
+git push site main        # the workflow in .github/workflows/deploy.yml publishes it
 ```
 
-### Option B — a separate repository (keeps the current site untouched)
+### Overriding the address (custom domain, other hosts)
 
-Create a new repository such as `portfolio`, push this folder to it, turn on **Pages → GitHub
-Actions**, and add two repository variables (**Settings → Secrets and variables → Actions →
-Variables**): `SITE_URL = https://mehmoodanas.github.io` and `BASE_PATH = /portfolio`. The site is
-then served at `https://mehmoodanas.github.io/portfolio/`.
+Add repository variables `SITE_URL` and `BASE_PATH` (**Settings → Secrets and variables → Actions →
+Variables**). If you set them with the GitHub CLI on Windows in Git Bash, prefix the command with
+`MSYS_NO_PATHCONV=1`, otherwise `/portfolio` is silently rewritten into a Windows path (the build
+now refuses values like that). To build by hand with a sub-path:
+
+```powershell
+$env:SITE_URL = "https://mehmoodanas.github.io"; $env:BASE_PATH = "/portfolio"; npm run build
+```
 
 ### Netlify, Vercel or Cloudflare Pages
 
 Import the repository and use: build command `npm run build`, output directory `dist`. Set the
 environment variable `SITE_URL` to the address you are given, for example
 `https://your-name.netlify.app`, so canonical links and the social-sharing image use the right
-domain. If you use your own domain, set `SITE_URL` to that domain.
+domain (leave `BASE_PATH` unset).
+
+### Search engines
+
+The site lives at the root of `mehmoodanas.github.io`, so `robots.txt` and the sitemap are found
+automatically. For faster indexing, submit `https://mehmoodanas.github.io/sitemap-index.xml` in
+Google Search Console and Bing Webmaster Tools.
 
 ## Contact form
 
@@ -108,11 +132,15 @@ and show a message only after the service confirms the submission.
 - `public/og-image.png` — the 1200×630 picture shown when the link is shared on LinkedIn, Slack,
   WhatsApp and similar. `npm run og` regenerates it from `scripts/og/template.html` using the
   Edge or Chrome browser installed on your computer.
+- The accent colour is a set of tokens at the top of `src/styles/global.css`. `favicon.svg` and
+  `scripts/og/template.html` contain the colour as well; edit them and re-run `npm run icons` and
+  `npm run og` if you change it.
 
 ## Accessibility and performance notes
 
-- Semantic landmarks, one `<h1>` per page, a skip link, visible focus outlines, keyboard-operable
-  menu (Escape closes it), 44 px minimum touch targets and WCAG AA colour contrast.
+- Semantic landmarks, one `<h1>` per page, a skip link, visible focus outlines, a keyboard-operable
+  menu (Escape closes it), 44 px touch targets for buttons and navigation, and WCAG AA colour contrast.
+- The site is usable without JavaScript (the mobile menu becomes a plain row of links).
 - Fonts are bundled with the site (no Google Fonts requests). Images are converted to WebP at
   several sizes with explicit dimensions to avoid layout shift and lazy-loaded below the fold.
 - The only JavaScript is `src/scripts/site.ts` (about 2 KB gzipped).

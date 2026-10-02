@@ -15,9 +15,17 @@ interface Props {
   image?: string;
   /** Extra JSON-LD structured data for this page. */
   jsonLd?: Record<string, unknown>;
+  /** Keep the page out of search results and omit its canonical URL (used for the 404 page). */
+  noindex?: boolean;
 }
 
-const { title, description = site.description, image = '/og-image.png', jsonLd } = Astro.props;
+const {
+  title,
+  description = site.description,
+  image = '/og-image.png',
+  jsonLd,
+  noindex = false,
+} = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://mehmoodanas.github.io');
 const imageUrl = absoluteUrl(image, Astro.site);
@@ -32,7 +40,7 @@ const imageUrl = absoluteUrl(image, Astro.site);
     <meta name="description" content={description} />
     <meta name="author" content={site.name} />
     <meta name="theme-color" content="#f6f5f2" />
-    <link rel="canonical" href={canonical.toString()} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical.toString()} />}
     <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
     <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
     <link rel="sitemap" href={url('/sitemap-index.xml')} />
@@ -42,11 +50,14 @@ const imageUrl = absoluteUrl(image, Astro.site);
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical.toString()} />
+    {!noindex && <meta property="og:url" content={canonical.toString()} />}
     <meta property="og:image" content={imageUrl} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={`${site.name}, ${site.shortTitle}`} />
+    <meta
+      property="og:image:alt"
+      content={`Card with the name ${site.name}, the line "${site.title}", and a decorative stack of three layers`}
+    />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
