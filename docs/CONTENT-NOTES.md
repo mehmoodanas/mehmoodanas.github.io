@@ -89,9 +89,8 @@ are kept in `_reference-material/` for reference.
 - **Photo.** None was supplied, and none was invented; the hero uses the 3D decoration instead.
 - **Your own domain.** The site is published at `https://mehmoodanas.github.io/`. A copy also
   publishes at `https://mehmoodanas.github.io/portfolio/` from the `portfolio` repository.
-- **Master's degree.** Your GitHub README should list a master's degree, but none appears in your
-  CV or any other source, so none is shown on the site. Send the programme, university and dates
-  (or whether it is planned or in progress) and it will be added.
+- **Master's degree.** MSc in Information Technology, Riga Nordic University, is shown as
+  "In progress" (from the latest CV, which gives no start date). Add dates when known.
 
 ## Decisions made for you
 

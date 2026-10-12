@@ -72,7 +72,11 @@ export const hero = {
   // looking to build on it with LLM, RAG and agentic AI engineering.
   intro:
     'I have hands-on experience building end-to-end AI systems, from data preprocessing and transformer fine-tuning to evaluation and deployment. My bachelor’s thesis applied DistilBERT and Sentence-BERT to customer-support automation, and I’m looking to build on that foundation with LLM, RAG and agentic AI engineering.',
-  facts: ['BSc Computer Systems, Riga Technical University', 'Python · SQL · Java'],
+  facts: [
+    'BSc Computer Systems, Riga Technical University',
+    'MSc Information Technology (in progress), Riga Nordic University',
+    'Python · SQL · Java',
+  ],
 };
 
 /* ─────────────────────────────────── About ────────────────────────────────── */
@@ -450,6 +454,13 @@ export const projects: Project[] = [
 /* ─────────────────────── Education, certifications, languages ─────────────── */
 
 export const education: Education[] = [
+  {
+    degree: 'MSc in Information Technology',
+    institution: 'Riga Nordic University',
+    location: 'Riga, Latvia',
+    period: 'In progress',
+    coursework: [],
+  },
   {
     degree: 'BSc in Computer Systems',
     institution: 'Riga Technical University',

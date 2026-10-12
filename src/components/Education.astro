@@ -30,12 +30,16 @@ const thesisOf = (slug?: string) => projects.find((p) => p.slug === slug);
                 {entry.institution} <span>· {entry.location}</span>
               </p>
 
-              <h4 class="sub">Relevant coursework</h4>
-              <ul class="chip-list">
-                {entry.coursework.map((course) => (
-                  <li class="chip">{course}</li>
-                ))}
-              </ul>
+              {entry.coursework.length > 0 && (
+                <>
+                  <h4 class="sub">Relevant coursework</h4>
+                  <ul class="chip-list">
+                    {entry.coursework.map((course) => (
+                      <li class="chip">{course}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
 
               {thesis && (
                 <p class="thesis">
