@@ -82,7 +82,8 @@ are kept in `_reference-material/` for reference.
 - **Thesis results and code.** The CV describes the evaluation (accuracy, confidence, latency) but
   gives no numbers, and there is no public thesis repository or report. The thesis page therefore
   has no results or links. Adding one result table or a link to the thesis text would strengthen it.
-- **Certificate links.** No credential URLs were provided, so certifications are plain text. Add
+- **Certificate links.** The IBM SkillsBuild certificate (issued 14 Oct 2026) links to its Credly
+  verification page. The other certifications have no credential URLs, so they are plain text. Add
   `url: '…'` to an entry in `certifications` to make it a link. There are no dates for the Nebius,
   Claude Code 101 or IELTS entries, and no IELTS band score.
 - **Awards, publications, volunteering.** None appear in your sources, so there are no sections.

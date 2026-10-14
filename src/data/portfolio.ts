@@ -483,6 +483,13 @@ export const education: Education[] = [
 
 export const certifications: Certification[] = [
   {
+    title: 'AI Fundamentals: Foundations for Understanding AI',
+    issuer: 'IBM SkillsBuild',
+    date: 'Oct 2026',
+    // Credly verification link printed on the certificate (checked: HTTP 200).
+    url: 'https://www.credly.com/go/afNJynmZ',
+  },
+  {
     title: 'Generative AI Fundamentals',
     issuer: 'Databricks Academy',
     date: 'Aug 2025',
